@@ -1,2 +1,1 @@
-# FaceStylization
-Building a web application around JoJoGAN face stylization.
+# sp24-project
