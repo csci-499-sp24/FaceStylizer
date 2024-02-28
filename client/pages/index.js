@@ -19,6 +19,7 @@ function Index() {
   return (
     <div>
       <div>Return message from server</div>
+      {/* this is a comment :) */}
       <div>{message}</div>
     </div>
   )
