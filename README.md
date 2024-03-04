@@ -7,20 +7,31 @@ Building a web application around JoJoGAN face stylization.
 ```
 cd /server
 npm install
+```
 Create .env and add PORT=8080
 ```
-```
 cd /client
-Create .env.local and add NEXT_PUBLIC_SERVER_URL="http://localhost:8080"
 ```
+Create .env.local and add NEXT_PUBLIC_SERVER_URL="http://localhost:8080"
 3) Start Server and Client
 ```
 cd /server
 npm run dev
-Check that the api route (http://localhost:8080/api/home) shows the Hello World message
 ```
+Check that the api route (http://localhost:8080/api/home) shows the Hello World message
 ```
 cd /client
 npm run dev
-Check that the client shows both its static message, and the returned Hello World message from the server
 ```
+Check that the client shows both its static message, and the returned Hello World message from the server.
+4) Start MongoDB Container with Docker
+Starts the MongoDB container
+```
+docker-compose up
+```
+
+Interact w/ the container with <strong>mongosh</strong>
+```
+docker exec -it server-mongodb_container-1 mongosh admin -u root -p password
+```
+

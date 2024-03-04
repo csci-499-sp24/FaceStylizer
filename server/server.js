@@ -8,7 +8,7 @@ const DB_name  = "FaceStylizerDB";
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/FaceStylizerDB');
+    await mongoose.connect('mongodb://127.0.0.1:27017/${DB_name}');
     console.log(`Successfully connected to ${DB_name}`);
 }
 
