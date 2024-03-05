@@ -46,3 +46,8 @@ package-lock.json
 
 # local env files
 /server/.env
+
+### AWS
+
+# secret key for server access
+loginKey.pem

@@ -28,12 +28,12 @@ npm run dev
 ```
 Check that the client shows both its static message, and the returned Hello World message from the server.
 
-## 4) Start MongoDB Container with Docker
+## 4) Start MongoDB + Server w/ Docker
 Install [Docker](https://docs.docker.com/compose/install/)
 
-Starts the MongoDB container
+Starts the MongoDB + Server
 ```
-docker-compose up
+docker-compose up --build -d
 docker ps
 ```
 
