@@ -26,6 +26,19 @@ async function main() {
         console.log(e);
         process.exit(1);
     });
+    const user= await User.create({
+        username: "user123",
+        password: "pass123"
+    })
+    await user.save()
+        .then((resp) => {
+            console.log(resp);
+            res.json({message: resp});
+        })
+        .catch((e) => {
+            console.log(`Could not create : ${e}`);
+            res.json({message: `Could not create : ${e}`});
+        });
 }
 
 // Start Listening on Port
@@ -43,8 +56,8 @@ app.get("/api/home", (req, res) => {
 
 // Create Users (POST)
 app.post("/users/createUser", async (req, res) => {
-    // Create User Object 
-    const user = await User.create({
+    // Create User Object
+    const user= await User.create({
         username: "user123",
         password: "pass123"
     })
