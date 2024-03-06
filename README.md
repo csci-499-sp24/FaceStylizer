@@ -39,8 +39,6 @@ docker ps
 
 Interact w/ the container with <strong>mongosh</strong>
 ```
-docker exec -it server-mongodb_container-1 mongosh admin -u root -p password
-=======
 docker exec -it facestylizer-mongo-1 mongosh admin -u root -p password
 ```
 
