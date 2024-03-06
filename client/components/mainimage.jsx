@@ -10,7 +10,7 @@ const CenteredImage = () => {
       
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-yellow-500 animate-bounce">Welcome to FACESTYLIZER</h1>
-        <p className="text-lg text-gray-800">Your one-stop destination for stylish face designs</p>
+        <p className="text-lg text-gray-800">Your one-stop destination for stylized face designs</p>
       </div>
       
       <div>
