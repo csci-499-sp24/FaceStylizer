@@ -19,14 +19,13 @@ const mongooseUrl   = process.env.MONGOOSE_URL || `${mongoUrl}/${db_name}?authSo
 // Connect to DB
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect(mongooseUrl).then((connection) => {
+    await mongoose.connect(mongooseUrl).then(async (connection) => {
         console.log(`Successfully connected to ${db_name}`);
     }).catch((e) => {
         console.log(`Cannot connect to ${db_name}`);
         console.log(e);
         process.exit(1);
     });
-
 }
 
 // Start Listening on Port
@@ -48,10 +47,11 @@ app.post("/users/createUser", async (req, res) => {
     const user = await User.create({
         username: "user123",
         password: "pass123"
-    }).save()
-    .then((res) => {
-        console.log(res);
-        res.json({message: res});
+    })
+    await user.save()
+    .then((resp) => {
+        console.log(resp);
+        res.json({message: resp});
     })
     .catch((e) => {
         console.log(`Could not create : ${e}`);
