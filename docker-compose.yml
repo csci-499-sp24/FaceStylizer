@@ -17,6 +17,12 @@ services:
       - mongo
     ports:
       - 8080:8080
+  
+  frontend:
+    image: facestylizer/frontend
+    build: ./client
+    ports:
+      - 3000:3000
 
   mongo-express:
     image: mongo-express:latest
