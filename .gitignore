@@ -42,6 +42,12 @@ next-env.d.ts
 
 # dependencies
 /server/node_modules
+package-lock.json
 
 # local env files
 /server/.env
+
+### AWS
+
+# secret key for server access
+loginKey.pem
