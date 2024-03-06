@@ -51,7 +51,7 @@ function FileUpload() {
                 <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
               </svg>
             </i>
-            <p className="text-lg text-yellow-500">Drop Pictures to upload</p>
+            <p className="text-lg text-yellow-500">Drop Pictures to Upload</p>
           </div>
 
           <section className="h-full overflow-auto p-8 w-full h-full flex flex-col">
