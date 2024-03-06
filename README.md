@@ -42,3 +42,14 @@ Interact w/ the container with <strong>mongosh</strong>
 ```
 docker exec -it facestylizer-mongo-1 mongosh admin -u root -p password
 ```
+
+Run frontend docker container
+```
+docker run -d --name=facestylizer-frontend facestylizer/frontend
+```
+
+Stop/Down docker containers
+```
+docker-compose stop # pauses containers
+docker-compose down # brings down containers
+```
