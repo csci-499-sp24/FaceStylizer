@@ -13,17 +13,18 @@ const { User } = require('./models/User.js');
 //--Connect to MongoDB--
 // DB config
 const db_name       = process.env.DB_NAME || "FaceStylizerDB";
-const mongoUrl      = process.env.MONGO_URL || "mongodb://root:password@127.0.0.1:27017";
+const mongoUrl      = process.env.MONGO_URL || "mongodb://root:password@localhost:27017";
 const mongooseUrl   = process.env.MONGOOSE_URL || `${mongoUrl}/${db_name}?authSource=admin`; 
 
 // Connect to DB
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect(mongooseUrl).then(async (connection) => {
+    await mongoose.connect(mongooseUrl).then((connection) => {
         console.log(`Successfully connected to ${db_name}`);
     }).catch((e) => {
         console.log(`Cannot connect to ${db_name}`);
         console.log(e);
+        console.log(e.message);
         process.exit(1);
     });
 }
