@@ -3,6 +3,11 @@ const express = require("express");
 const cors = require('cors')
 const app = express();
 
+//--BodyParser--
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 // Use Cors Middleware
 app.use(cors());
 
@@ -46,8 +51,8 @@ app.get("/api/home", (req, res) => {
 app.post("/users/createUser", async (req, res) => {
     // Create User Object
     const user= await User.create({
-        username: "user123",
-        password: "pass123"
+        username: req.body.username,
+        password: req.body.password
     })
     await user.save()
     .then((resp) => {
@@ -63,8 +68,7 @@ app.post("/users/createUser", async (req, res) => {
 // Read Users (GET)
 app.get("/users/readUser", async (req, res) => {
     const user = await User.findOne({
-        username: "user123",
-        password: "pass123"
+        username: req.body.username
     }).exec()
     .then((query) => {
         console.log(query);
@@ -78,5 +82,63 @@ app.get("/users/readUser", async (req, res) => {
 });
 
 // Update Users (PUT)
-// Delete Users (DELETE)
+app.put("/users/updateUser", async (req, res) => {
+    const user = await User.findOneAndUpdate({
+        username: req.body.username
+    },
+        {
+            $set: {
+                username: req.body.username,
+                password: req.body.password
+            }
+        },
+        {
+            upsert: true
+        },
+        ).exec()
+        .then((update) => {
+            console.log(update);
+            res.json({message: update});
+        })
+        .catch((e) => {
+            console.log(`Could not findOneAndUpdate : ${e}`);
+            res.json({message: `Could not findOneAndUpdate : ${e}`});
+        });
+});
 
+
+app.put("/users/updateUser/:id", async (req, res) => {
+    const user = await User.findByIdAndUpdate({
+            _id: req.params.id
+        },
+        {
+            $set: {
+                username: req.body.username,
+                password: req.body.password
+            }
+        },
+        {
+            upsert: true
+        },
+    ).exec()
+        .then((update) => {
+            console.log(update);
+            res.json({message: update});
+        })
+        .catch((e) => {
+            console.log(`Could not findByIdAndUpdate : ${e}`);
+            res.json({message: `Could not findByIdAndUpdate : ${e}`});
+        });
+});
+
+// Delete Users (DELETE)
+app.delete('/users/deleteUser/:id', async (req, res) => {
+    const user = await User.findByIdAndDelete({
+        _id: req.params.id
+    }
+    ).exec()
+        .then(query => {
+            res.json(query);
+        })
+        .catch(err => {console.error(err)});
+})
