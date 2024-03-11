@@ -69,7 +69,8 @@ app.post("/users/createUser", async (req, res) => {
 app.get("/users/readUser", async (req, res) => {
     const user = await User.findOne({
         username: req.body.username
-    }).exec()
+    })
+    .exec()
     .then((query) => {
         console.log(query);
         res.json({message: query});
@@ -95,7 +96,8 @@ app.put("/users/updateUser", async (req, res) => {
         {
             upsert: true
         },
-        ).exec()
+        )
+        .exec()
         .then((update) => {
             console.log(update);
             res.json({message: update});
@@ -120,7 +122,8 @@ app.put("/users/updateUser/:id", async (req, res) => {
         {
             upsert: true
         },
-    ).exec()
+    )
+        .exec()
         .then((update) => {
             console.log(update);
             res.json({message: update});
@@ -136,7 +139,8 @@ app.delete('/users/deleteUser/:id', async (req, res) => {
     const user = await User.findByIdAndDelete({
         _id: req.params.id
     }
-    ).exec()
+    )
+        .exec()
         .then(query => {
             res.json(query);
         })
