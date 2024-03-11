@@ -3,7 +3,7 @@ import React from 'react';
 function Index() {
   return (
     <div>
-      <h1>Hello World</h1>
+      <h1>You are signed in successfully with Google Auth!</h1>
     </div>
   );
 }

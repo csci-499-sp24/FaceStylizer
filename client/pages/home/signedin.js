@@ -3,7 +3,7 @@ import React from 'react';
 function Signedin() {
   return (
     <div>
-      <h1>You are signed in wowowowo</h1>
+      <h1>This is another page in home</h1>
     </div>
   );
 }
