@@ -27,6 +27,9 @@ from e4e_projection import projection as e4e_projection
 from util import *
 
 def main():
+    # 0) Setup Directories
+    setup()
+
     # 1) Load Pretrained StyleGAN
     LATENT_DIM = 512
     DEVICE = 'cpu'
