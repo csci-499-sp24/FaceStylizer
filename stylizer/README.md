@@ -1,5 +1,7 @@
 # Setup
 
+Install [Anaconda](https://www.anaconda.com/download)
+
 Install dependencies + activate env
 ```
 conda env create -f environment.yml
