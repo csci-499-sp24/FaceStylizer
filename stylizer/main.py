@@ -18,6 +18,7 @@ from copy import deepcopy
 import matplotlib
 import matplotlib.pyplot as plt
 
+
 # JojoGAN Dependencies 
 JOJOGAN_DIR = os.path.abspath("JoJoGAN/")
 sys.path.append(JOJOGAN_DIR)
@@ -25,9 +26,10 @@ sys.path.append(JOJOGAN_DIR)
 from model import *
 from e4e_projection import projection as e4e_projection
 from util import *
+from util import ensure_checkpoint_exists
 
 def main():
-    # 0) Setup Directories
+    # 0) Setup
     setup()
 
     # 1) Load Pretrained StyleGAN
@@ -75,6 +77,12 @@ def setup():
     os.makedirs('JoJoGAN/style_images', exist_ok=True)
     os.makedirs('JoJoGAN/style_images_aligned', exist_ok=True)
     os.makedirs('JoJoGAN/models', exist_ok=True)
+
+    # Ensure checkpoint models are downloaded
+    ensure_checkpoint_exists('JoJoGAN/models/stylegan2-ffhq-config-f.pt')
+    ensure_checkpoint_exists('JoJoGAN/models/dlibshape_predictor_68_face_landmarks.dat')
+    ensure_checkpoint_exists('JoJoGAN/models/e4e_ffhq_encode.pt')
+    ensure_checkpoint_exists('JoJoGAN/models/disney_preserve_color.pt')
 
 def load_pretrained_stylegan(latent_dim, device):
     # Load original generator
