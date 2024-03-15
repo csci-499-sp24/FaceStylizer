@@ -28,7 +28,7 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
-def main():
+def generatePretrainedStyle(input_filename):
     # 0) Setup
     setup()
 
@@ -38,10 +38,9 @@ def main():
     orig_generator, orig_mean_latent, test_generator, transform = load_pretrained_stylegan(LATENT_DIM, DEVICE)
     
     # 2) Process Source Image
-    INPUT_FILENAME = 'iu.jpeg'
-    FILEPATH = f'JoJoGAN/test_input/{INPUT_FILENAME}'
+    # INPUT_FILENAME = 'iu.jpeg'
+    FILEPATH = f'JoJoGAN/test_input/{input_filename}'
     aligned_face, test_latent_space = setup_source_image(FILEPATH, DEVICE)
-    aligned_face.save("sample.jpg")
 
     # 3) Load Pretrained Model into Generator for finetuning
     PRETRAINED = 'disney'
@@ -62,11 +61,12 @@ def main():
                                                  test_latent_space)
 
     # 5) Concatenate Output (Base Style - Base Input Face - Stylized Face)
+    output_dir = "output_files"
     pretrained_style_reference, input_base_face, output_tensor = concat_output(PRETRAINED, aligned_face, output_style, transform, DEVICE)
-    save_image(pretrained_style_reference, "1_pretrained_reference.jpg")
-    save_image(input_base_face, "2_input_face.jpg")
-    save_image(output_style, "3_stylized_face.jpg")
-    save_image(output_tensor, "4_results.jpg", (1028, 3080, 3), 3)
+    save_image(pretrained_style_reference, f"{output_dir}/{input_filename}_1_pretrained_reference.jpg")
+    save_image(input_base_face, f"{output_dir}/{input_filename}_2_input_face.jpg")
+    save_image(output_style, f"{output_dir}/{input_filename}_3_stylized_face.jpg")
+    save_image(output_tensor,f"{output_dir}/{input_filename}_4_results.jpg", (1028, 3080, 3), 3)
 
 def setup():
     # Set CUDNN benchmark to use pytorch
@@ -172,4 +172,4 @@ def save_image(image, filename, shape=(1024, 1024, 3), rows=1, size=None, mode='
     img.save(filename)
 
 if __name__ == "__main__":
-    main()
+    generatePretrainedStyle("chris_hemsworth.jpeg")
