@@ -70,16 +70,17 @@ function FileUpload() {
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
         >
-          {showDropMessage && (
-            <div id="overlay" className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex flex-col items-center justify-center rounded-md">
-              <i>
-                <svg className="fill-current w-12 h-12 mb-3 text-yellow-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
-                </svg>
-              </i>
-              <p className="text-lg text-yellow-500">Drop Pictures to Upload</p>
-            </div>
-          )}
+        {showDropMessage && (
+      <div id="overlay" className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex flex-col items-center justify-center rounded-md mt-20">
+     <i>
+          <svg className="fill-current w-12 h-12 mb-3 text-yellow-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
+        </svg>
+     </i>
+        <p className="text-lg text-yellow-500">Drop Pictures to Upload</p>
+      </div>
+        )}
+
 
           <section className="h-full overflow-auto p-8 w-full h-full flex flex-col">
             <header className="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center">
@@ -110,8 +111,7 @@ function FileUpload() {
             <ul id="gallery" className="flex flex-1 flex-wrap -m-1">
               {Object.keys(files).map((url) => (
                 <li key={url} className="block p-1 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-1/8 h-24">
-                  <article tabIndex="0" className="group w-full h-full rounded-md focus:outline-none focus:shadow-outline relative bg-gray-100 cursor-pointer">
-                    <img alt="upload preview" className="w-full h-full sticky object-cover rounded-md bg-fixed" src={url} />
+              <article tabIndex="0" className="group w-full h-40 rounded-md focus:outline-none focus:shadow-outline relative bg-gray-100 cursor-pointer">                    <img alt="upload preview" className="w-full h-full sticky object-cover rounded-md bg-fixed" src={url} />
                     <section className="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3">
                       <h1 className="flex-1"></h1>
                       <div className="flex">
@@ -123,11 +123,12 @@ function FileUpload() {
                           </i>
                         </span>
                         <p className="p-1 size text-xs">{files[url].size > 1024 ? files[url].size > 1048576 ? Math.round(files[url].size / 1048576) + 'mb' : Math.round(files[url].size / 1024) + 'kb' : files[url].size + 'b'}</p>
-                        <button className="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md" onClick={() => handleDelete(url)}>
-                          <svg className="pointer-events-none fill-current w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path className="pointer-events-none" d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z" />
-                          </svg>
+                        <button className="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md text-red-500" onClick={() => handleDelete(url)}>
+                            <svg className="pointer-events-none fill-current w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                             <path className="pointer-events-none" d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z" />
+                             </svg>
                         </button>
+
                       </div>
                     </section>
                   </article>
