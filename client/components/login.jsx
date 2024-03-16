@@ -1,4 +1,5 @@
 import React from "react";
+import Image from 'next/image';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // reactstrap components
@@ -13,7 +14,7 @@ function Login() {
         type="button"
         onClick={() => setModalOpen(!modalOpen)}
       >
-        Launch demo modal
+        Sign In
       </Button>
       <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
         <div className=" modal-header">
