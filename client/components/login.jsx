@@ -38,33 +38,23 @@ function Login() {
               <Label for="exampleEmail">
                 Email
               </Label>
-              {/* <InputGroup className=" input-group-alternative">
-                <div className="input-group-append">
-                    <span className="input-group-text">@</span>
-                </div> */}
                 <Input
                   id="exampleEmail"
                   name="email"
                   placeholder="Email"
                   type="email"
                 />
-              {/* </InputGroup> */}
             </FormGroup>
             <FormGroup>
               <Label for="examplePassword">
                 Password
               </Label>
-              {/* <InputGroup className=" input-group-alternative">
-                <div className="input-group-append">
-                    <span className="input-group-text">🗝</span>
-                </div> */}
               <Input
                 id="examplePassword"
                 name="password"
                 placeholder="Password"
                 type="password"
               />
-              {/* </InputGroup> */}
             </FormGroup>
           </Form>
         <div class="text-center">
