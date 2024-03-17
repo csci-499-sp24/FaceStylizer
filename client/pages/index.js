@@ -8,7 +8,7 @@ import App from "./app"
 
 function Index() {
   return (
-    <GoogleOAuthProvider clientId="593381902699-od149i7asrg50dv2fgsju6ho0vqnpehl.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="593381902699-jdfocdq7nnpnsbjehq5sedfs6cf8k7b8.apps.googleusercontent.com">
         <App/>
     </GoogleOAuthProvider>
     

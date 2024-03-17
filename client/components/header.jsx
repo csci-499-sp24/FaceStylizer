@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { GoogleLogin } from '@react-oauth/google';
-
+import { useRouter } from 'next/router';
 
 function RHeader() {
   const [open, setOpen] = useState(true);
+  const router = useRouter();
 
   const responseMessage = (response) => {
     console.log(response);
+    router.push('/home');
   };
   const errorMessage = (error) => {
       console.log(error);
