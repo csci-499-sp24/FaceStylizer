@@ -20,21 +20,11 @@ const db_name       = process.env.DB_NAME || "FaceStylizerDB";
 const mongoUrl      = process.env.MONGO_URL || "mongodb://root:password@localhost:27017";
 const mongooseUrl   = process.env.MONGOOSE_URL || `${mongoUrl}/${db_name}?authSource=admin`;
 
-//express router: import routes we defined
+//--Express router: import routes we defined
 const apiRouter = require('./routes/user');
 
-// Connect to DB
-main().catch(err => console.log(err));
-async function main() {
-    await mongoose.connect(mongooseUrl).then((connection) => {
-        console.log(`Successfully connected to ${db_name}`);
-    }).catch((e) => {
-        console.log(`Cannot connect to ${db_name}`);
-        console.log(e);
-        console.log(e.message);
-        process.exit(1);
-    });
-
+//--Configure routes and error handling
+const configureApp = async () => {
     // Mount apiRouter
     app.use(apiRouter);
 
@@ -46,7 +36,32 @@ async function main() {
         error.status = 404;
         next(error);
     })
+
+};
+
+// Connect to DB
+async function connectDB() {
+    await mongoose.connect(mongooseUrl).then((connection) => {
+        console.log(`Successfully connected to ${db_name}`);
+    }).catch((e) => {
+        console.log(`Cannot connect to ${db_name}`);
+        console.log(e);
+        console.log(e.message);
+        process.exit(1);
+    });
 }
+
+const bootApp = async () => {
+    // configure and connect to DB
+    await connectDB();
+
+    //express setup - define routes and middleware
+    await configureApp();
+};
+
+// PROGRAM STARTS HERE
+
+bootApp();
 
 // Start Listening on Port
 const port = process.env.PORT || 8080;
