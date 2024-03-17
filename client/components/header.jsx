@@ -8,11 +8,11 @@ function RHeader() {
   const router = useRouter();
 
   const responseMessage = (response) => {
-    console.log(response);
+    // console.log(response);
     router.push('/home');
   };
   const errorMessage = (error) => {
-      console.log(error);
+      // console.log(error);
   };
 
   return (
