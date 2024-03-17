@@ -1,7 +1,6 @@
 import React from "react";
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 // reactstrap components
 import { Button, 
   Modal, 
@@ -15,8 +14,27 @@ import { Button,
   Input
  } from "reactstrap";
 
+import { useRouter } from 'next/router';
+import { useGoogleLogin } from '@react-oauth/google';
+
 function Login() {
   const [modalOpen, setModalOpen] = React.useState(false);
+
+  const router = useRouter();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log('Google login successful', tokenResponse);
+      router.push('/home');
+      // You can now use the tokenResponse to authenticate the user in your app
+    },
+    onError: () => {
+      console.error('Google login failed');
+      // Handle login errors here
+    },
+    flow: 'auth-code', // Use 'auth-code' for the authorization code flow
+  });
+
   return (
     <>
       <button
@@ -76,11 +94,12 @@ function Login() {
                 className="m-1 bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center text-base ease-linear transition-all duration-150"
                 color="default"
                 href="#"
-                onClick={(e) => e.preventDefault()}
+                onClick={() => googleLogin()}
               >
                 <img alt="..." class="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
                 Google 
               </button>
+              
           </div>
         <ModalFooter>
           <Button
