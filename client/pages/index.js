@@ -7,7 +7,7 @@ import React from 'react';
 function Index() {
   return (
 
-
+// fix the changes i made previously with navbar (index.js/app.js)
     <div>
       <RHeader/>
       <CenteredImage/>
