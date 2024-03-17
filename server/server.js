@@ -28,24 +28,24 @@ main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect(mongooseUrl).then((connection) => {
         console.log(`Successfully connected to ${db_name}`);
-        // Mount apiRouter
-        app.use(apiRouter);
-
-        // Handle page not found:
-        // gets triggered when a request is made to
-        // an undefined route
-        app.use((req, res, next) => {
-            const error = new Error("Not Found, Please Check URL!");
-            error.status = 404;
-            next(error);
-        })
-
     }).catch((e) => {
         console.log(`Cannot connect to ${db_name}`);
         console.log(e);
         console.log(e.message);
         process.exit(1);
     });
+
+    // Mount apiRouter
+    app.use(apiRouter);
+
+    // Handle page not found:
+    // gets triggered when a request is made to
+    // an undefined route
+    app.use((req, res, next) => {
+        const error = new Error("Not Found, Please Check URL!");
+        error.status = 404;
+        next(error);
+    })
 }
 
 // Start Listening on Port
