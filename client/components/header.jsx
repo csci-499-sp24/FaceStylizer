@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Login from "/components/login"
+import Login from "/components/login";
+import SignUp from './signup';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 
@@ -14,7 +15,10 @@ function RHeader() {
             <a href="#" className="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">FACESTYLIZER</a>
           </div>
           <nav className={`flex-col flex-grow ${open ? '' : 'hidden'} pb-4 md:pb-0 md:flex md:justify-end md:flex-row`}>
-              <Login/>
+            <div className="flex items-center">
+              <Login />
+              <SignUp />
+            </div>
           </nav>
         </div>
       </div>
