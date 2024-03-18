@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Login from "/components/login";
-import SignUp from "./signup";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "tailwindcss/tailwind.css";
-import { useAuth } from "../context/authContext";
+import SignUp from './signup';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'tailwindcss/tailwind.css';
+import { useAuth } from '../context/authContext';
 
 function RHeader() {
   const [open, setOpen] = useState(true);
@@ -18,7 +18,7 @@ function RHeader() {
     });
 
     // Optionally, you might want to store the access token in local storage for persistence
-    localStorage.setItem("accessToken", tokens.access_token);
+    localStorage.setItem('accessToken', tokens.access_token);
   };
 
   return (
@@ -33,25 +33,23 @@ function RHeader() {
               FACESTYLIZER
             </a>
           </div>
-
-          {user ? (
-            <>
-              <div>Welcome, {user.profile.name}</div>
-              <img src={user.profile.picture}></img>
-              <button onClick={signOut}>Sign Out</button>
-            </>
-          ) : (
-            <nav
-              className={`flex-col flex-grow ${
-                open ? "" : "hidden"
-              } pb-4 md:pb-0 md:flex md:justify-end md:flex-row`}
-            >
-              <div className="flex items-center">
-                <Login />
-                <SignUp />
-              </div>
-            </nav>
-          )}
+            {
+            user ? (
+              <>
+                <div>Welcome, {user.profile.name}</div>
+                               <img src={user.profile.picture}></img>
+ <button onClick={signOut}>Sign Out</button>
+              </>
+              
+            ): (
+              <nav className={`flex-col flex-grow ${open ? '' : 'hidden'} pb-4 md:pb-0 md:flex md:justify-end md:flex-row`}>
+                <div className="flex items-center">
+                  <Login />
+                  <SignUp />
+                </div>
+              </nav>
+            )}
+         
         </div>
       </div>
     </div>

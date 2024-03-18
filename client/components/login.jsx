@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '../context/authContext';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+
 import { Button, 
   Modal, 
   ModalBody, 
@@ -18,19 +19,19 @@ import { Button,
   Input
  } from "reactstrap";
 
-
 function Login() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const { signIn } = useAuth();
   const router = useRouter();
-
+    
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     console.log(`${name} changed to:`, value); // Log the changed field and its value
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,7 +57,7 @@ function Login() {
     onSuccess: async (tokenResponse) => {
       console.log('Google login successful', tokenResponse);
       const user = { accessToken: tokenResponse.access_token }; // Adjust based on actual token response structure
-
+  
       try {
         const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json`, {
           headers: {
@@ -122,30 +123,34 @@ function Login() {
                 onChange={handleChange}
               />
             </FormGroup>
+            
             {error && <p className="text-red-500">{error}</p>}
             <div className="text-center">
               <Button color="primary" outline type="submit">Sign In</Button>
             </div>
+            
           </Form>
+
           <br></br>
+
           <div className="text-center">
-            <h5 className="text-gray-600 font-bold">
-              or sign in with
-            </h5>
+          <h5 className="text-gray-600 font-bold">
+            or sign in with
+          </h5>
           </div>
           <div className=" btn-wrapper text-center mb-2">
-            <button
-                className="m-1 bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center text-base ease-linear transition-all duration-150"
-                color="default"
-                href="#"
-                onClick={() => googleLogin()}
-              >
-                <img alt="..." className="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
-                Google 
-              </button>
-              
+          <button
+              className="m-1 bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center text-base ease-linear transition-all duration-150"
+              color="default"
+              href="#"
+              onClick={() => googleLogin()}
+            >
+              <img alt="..." className="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
+              Google 
+            </button>
+            
           </div>
-
+          
         </ModalBody>
          
 
