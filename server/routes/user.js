@@ -139,4 +139,26 @@ router.delete('/users/deleteUser/:id', async (req, res) => {
         });
 })
 
+// User Login by Username / Password
+router.get('/users/login', async (req, res) => {
+    const user = User.find({
+        username: req.body.username
+    })
+    await user.exec()
+        .then((query) => {
+            if (query[0]["password"] === req.body.password) {
+                console.log(`User ${req.body.username} successfully logged in`);
+                res.status(202).send({message: `Welcome back ${req.body.username}`});
+            } else {
+                console.log(`Incorrect login attempt for user ${req.body.username}`);
+                res.status(412).send({message: `The password you have entered is incorrect`});
+            }
+        })
+        .catch((e) => {
+            console.log(e);
+            console.log(`No such user exists with username ${req.body.username}`);
+            res.status(404).send({message: `No such user exists with username ${req.body.username}`});
+        });
+})
+
 module.exports = router;
