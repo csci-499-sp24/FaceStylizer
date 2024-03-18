@@ -2,6 +2,7 @@ import React from "react";
 import 'tailwindcss/tailwind.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // reactstrap components
+import { useAuth } from '../context/authContext';
 import { Button, 
   Modal, 
   ModalBody, 
@@ -16,23 +17,38 @@ import { Button,
 
 import { useRouter } from 'next/router';
 import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 function Login() {
   const [modalOpen, setModalOpen] = React.useState(false);
-
+  const { signIn } = useAuth();
   const router = useRouter();
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
+    onSuccess: async (tokenResponse) => {
       console.log('Google login successful', tokenResponse);
-      router.push('/home');
-      // You can now use the tokenResponse to authenticate the user in your app
+      const user = { accessToken: tokenResponse.access_token }; // Adjust based on actual token response structure
+
+      try {
+        const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json`, {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+            Accept: 'application/json'
+          }
+        });
+        
+        user.profile = res.data; // Include profile information in the user object
+        console.log(user)
+        signIn(user);  // Update global user state
+        setModalOpen(false);  // Close the modal upon successful login
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
     },
     onError: () => {
       console.error('Google login failed');
       // Handle login errors here
-    },
-    flow: 'auth-code', // Use 'auth-code' for the authorization code flow
+    }
   });
 
   return (
