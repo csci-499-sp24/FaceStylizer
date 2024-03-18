@@ -20,15 +20,16 @@ function Login() {
     e.preventDefault();
     try {
       console.log('Submitting form data:', formData); // Log the entire form data before submission
-      const response = await UsersApi.get('/login', {
-        params: {
+      const response = await UsersApi.post('/login', {
+        
           username: formData.username,
           password: formData.password
-        }
+        
       });
       console.log('Login successful:', response.data);
+      sessionStorage.setItem('username', formData.username);
       console.log('Redirecting to /home...');
-      router.push('/home'); // Redirect to /home
+      router.push('/account'); // Redirect to /home
     } catch (error) {
       console.error('Error logging in:', error);
       console.log('Error response:', error.response); // Log error response

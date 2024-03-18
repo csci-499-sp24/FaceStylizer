@@ -25,8 +25,9 @@ function SignUp() {
         password: formData.password
       });
       console.log('Account created successfully:', response.data);
+      sessionStorage.setItem('username', formData.username);
       console.log('Redirecting to /home...');
-      router.push('/home'); // Redirect to /home
+      router.push('/account'); // Redirect to /home
     } catch (error) {
       console.error('Error creating account:', error);
       console.log('Error response:', error.response); // Log error response
