@@ -139,7 +139,6 @@ router.delete('/users/deleteUser/:id', async (req, res) => {
         });
 })
 
-// User Login by Username / Password
 router.get('/users/login', async (req, res) => {
     const user = User.find({
         username: req.body.username
