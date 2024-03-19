@@ -19,11 +19,13 @@ import { Button,
   Input
  } from "reactstrap";
 
+
 function Login() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const { signIn } = useAuth();
+
   const router = useRouter();
     
   const handleChange = (e) => {
@@ -32,7 +34,6 @@ function Login() {
     console.log(`${name} changed to:`, value); // Log the changed field and its value
   };
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -80,6 +81,7 @@ function Login() {
     }
   });
   
+
   return (
     <>
       <button
@@ -123,7 +125,7 @@ function Login() {
                 onChange={handleChange}
               />
             </FormGroup>
-            
+
             {error && <p className="text-red-500">{error}</p>}
             <div className="text-center">
               <Button color="primary" outline type="submit">Sign In</Button>
@@ -152,7 +154,7 @@ function Login() {
           </div>
           
         </ModalBody>
-         
+      
 
         <ModalFooter>
           <Button color="secondary" outline type="button" onClick={() => setModalOpen(!modalOpen)}>Close</Button>

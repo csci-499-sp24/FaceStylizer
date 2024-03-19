@@ -18,11 +18,13 @@ import { Button,
   Input
  } from "reactstrap";
 
+
 function SignUp() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const { signIn } = useAuth();
+
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -76,8 +78,7 @@ function SignUp() {
       // Handle login errors here
     }
   });
-  
-
+ 
   return (
     <>
       <button
@@ -126,6 +127,7 @@ function SignUp() {
               <Button color="primary" outline type="submit">Sign Up</Button>
             </div>
           </Form>
+
           <br></br>
 
           <div className="text-center">
