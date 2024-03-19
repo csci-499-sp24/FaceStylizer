@@ -91,11 +91,11 @@ function Login() {
               />
             </FormGroup>
           </Form>
-        <div class="text-center">
+        <div className="text-center">
           <Button color="primary" 
           outline 
           type="button"
-          class="btn btn-primary">
+          className="btn btn-primary">
             Sign In
           </Button>
         </div>
@@ -112,7 +112,7 @@ function Login() {
                 href="#"
                 onClick={() => googleLogin()}
               >
-                <img alt="..." class="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
+                <img alt="..." className="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
                 Google 
               </button>
               
