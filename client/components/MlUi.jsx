@@ -51,7 +51,7 @@ function MlUi({ images }) {
                     />
                 ))}
 
-                <label
+                {/* <label
                     htmlFor="file-upload"
                     className="w-40 h-40 mx-4 cursor-pointer border border-gray-300 rounded-lg flex justify-center items-center"
                 >
@@ -72,6 +72,7 @@ function MlUi({ images }) {
                         </svg>
                     </span>
                 </label>
+                 */}
                 <input
                     type="file"
                     id="file-upload"
