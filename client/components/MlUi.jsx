@@ -4,7 +4,7 @@ function MlUi({ images }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
-    const [displayedImages, setDisplayedImages] = useState(images);
+    const [displayedImages, setDisplayedImages] = useState(images || []);
 
     const handleImageSelect = (image, index) => {
         setSelectedImage(image);
