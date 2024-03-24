@@ -23,6 +23,7 @@ function RHeader() {
     fetchUsername();
   }, []);
 
+  // if user is logged in and username exists in session storage
   if(username) {
     return (
       <div className="antialiased bg-white dark-mode:bg-gray-800">
@@ -41,6 +42,7 @@ function RHeader() {
       </div>
     );
   } else {
+    // if there isn't any user logged in/sessionStorage is empty
     return (
       <div className="antialiased bg-white dark-mode:bg-gray-800">
         <div className="w-full text-gray-700 dark-mode:text-gray-200">
