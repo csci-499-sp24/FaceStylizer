@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 
 function Index() {
   const [username, setUsername] = useState("");
@@ -16,6 +17,14 @@ function Index() {
 
     fetchUsername();
   }, []);
+
+  const router = useRouter();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push('/');
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, );
 
   return (
     <div>
