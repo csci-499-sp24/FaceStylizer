@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FilesApi from "@/Api/FilesApi";
 
 function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -153,8 +154,16 @@ function MlUi({ images, onBack }) {
 
         <button
         className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-        onClick={() => console.log("Submitted")}
-        disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
+        onClick={() => {
+            console.log('Submitting form data:', selectedImage);
+            const url = 'upload/' + sessionStorage.getItem('username');
+            console.log(url);
+            const response = FilesApi.post(url, {
+                image: selectedImage
+            });
+            console.log('Uploaded file successfully');
+        }}
+        disabled={!selectedImage || !selectedStyle || sessionStorage.getItem('username') === null} // Button is disabled if no image is selected or no style is chosen
     >
         Submit
     </button>
