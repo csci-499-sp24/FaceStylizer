@@ -5,7 +5,7 @@ const {User} = require("../models/User.js");
 //--Users Endpoints (CRUD)--
 
 // Read User by Username (GET)
-router.get('/users/readUser', async (req, res) => {
+router.get('/readUser', async (req, res) => {
     const user = User.findOne({
         username: req.body.username
     })
@@ -21,7 +21,7 @@ router.get('/users/readUser', async (req, res) => {
 })
 
 // Read User by ID (GET)
-router.get('/users/readUser/:id', async (req, res) => {
+router.get('/readUser/:id', async (req, res) => {
     const user = User.findOne({
         _id : req.params.id
     })
@@ -37,7 +37,7 @@ router.get('/users/readUser/:id', async (req, res) => {
 })
 
 // Create Users (POST)
-router.post('/users/createUser', async (req, res) => {
+router.post('/createUser', async (req, res) => {
     // Create User Object
     const user = await User.create({
         username: req.body.username,
@@ -46,7 +46,7 @@ router.post('/users/createUser', async (req, res) => {
     })
     await user.save()
         .then((resp) => {
-            console.log(resp);
+            console.log(`Created user successfully with username ${req.body.username} and password ${req.body.password}`)
             res.json({message: resp});
         })
         .catch((e) => {
@@ -56,7 +56,7 @@ router.post('/users/createUser', async (req, res) => {
 })
 
 // Update User by Username (PUT)
-router.put("/users/updateUser", async (req, res) => {
+router.put("/updateUser", async (req, res) => {
     const user = User.findOneAndUpdate({
             username: req.body.username
         },
@@ -73,6 +73,8 @@ router.put("/users/updateUser", async (req, res) => {
     )
     await user.exec()
         .then((update) => {
+            console.log(`Updated user with id ${update["_id"]}`);
+            console.log("Prior to change:")
             console.log(update);
             res.json({message: update});
         })
@@ -83,7 +85,7 @@ router.put("/users/updateUser", async (req, res) => {
 });
 
 // Update User by ID (PUT)
-router.put("/users/updateUser/:id", async (req, res) => {
+router.put("/updateUser/:id", async (req, res) => {
     const user = User.findByIdAndUpdate({
             _id: req.params.id
         },
@@ -100,8 +102,10 @@ router.put("/users/updateUser/:id", async (req, res) => {
     )
     await user.exec()
         .then((update) => {
+            console.log(`Updated user with id ${update["_id"]}`);
+            console.log("Prior to change:")
             console.log(update);
-            res.json({message: update});
+            res.json({object_changed: update});
         })
         .catch((e) => {
             console.log(`Could not findByIdAndUpdate : ${e}`);
@@ -110,14 +114,15 @@ router.put("/users/updateUser/:id", async (req, res) => {
 });
 
 // Delete User by Username (DELETE)
-router.delete('/users/deleteUser/', async (req, res) => {
+router.delete('/deleteUser/', async (req, res) => {
     const user = User.findOneAndDelete({
             username: req.body.username
         }
     )
     await user.exec()
         .then(query => {
-            res.json(query);
+            console.log(`Deleted user with username ${req.body.username} from database.`);
+            res.json({messsage: `Deleted user with id ${req.params.id}`});
         })
         .catch(err => {
             console.error(err)
@@ -125,21 +130,22 @@ router.delete('/users/deleteUser/', async (req, res) => {
 })
 
 // Delete User by ID (DELETE)
-router.delete('/users/deleteUser/:id', async (req, res) => {
+router.delete('/deleteUser/:id', async (req, res) => {
     const user = User.findByIdAndDelete({
             _id: req.params.id
         }
     )
     await user.exec()
         .then(query => {
-            res.json(query);
+            console.log(`Deleted user with id ${req.params.id} from database.`)
+            res.json({messsage: `Deleted user with id ${req.params.id}`});
         })
         .catch(err => {
             console.error(err)
         });
 })
 
-router.post('/users/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     const user = User.find({
         username: req.body.username
     })
