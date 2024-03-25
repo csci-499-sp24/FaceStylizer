@@ -25,15 +25,22 @@ function MlUi({ images, onBack }) {
         }
     };
 
-    const handleImageRemove = () => {
-        setSelectedImage(null);
-        setSelectedStyle(null);
-    };
+    // const handleImageRemove = () => {
+    //     setSelectedImage(null);
+    //     setSelectedStyle(null);
+    // };
 
     const handleStyleChange = (event) => {
         setSelectedStyle(event.target.value); 
     };
-
+    
+    const handleImageRemove = (index) => {
+        const updatedImages = [...displayedImages];
+        updatedImages.splice(index, 1);
+        setDisplayedImages(updatedImages);
+        setSelectedImage(null);
+        setSelectedStyle(null);
+    };
     useEffect(() => {
         window.scrollTo(0, document.body.scrollHeight);
     }, []); 
