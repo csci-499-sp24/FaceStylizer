@@ -51,3 +51,6 @@ package-lock.json
 
 # secret key for server access
 loginKey.pem
+
+### JoJoGAN 
+stylizer/*.jpg
