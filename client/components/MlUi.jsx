@@ -163,7 +163,7 @@ function MlUi({ images, onBack }) {
             });
             console.log('Uploaded file successfully');
         }}
-        disabled={!selectedImage || !selectedStyle || sessionStorage.getItem('username') === null} // Button is disabled if no image is selected or no style is chosen
+        disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
     >
         Submit
     </button>
