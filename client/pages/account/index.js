@@ -27,7 +27,7 @@ function Index() {
   const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/');
+      router.push('../');
     }, 4000);
     return () => clearTimeout(timer);
   }, );
