@@ -152,21 +152,32 @@ function MlUi({ images, onBack }) {
                 )} */}
 
 
-        <button
-        className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-        onClick={() => {
-            console.log('Submitting form data:', selectedImage);
-            const url = 'upload/' + sessionStorage.getItem('username');
-            console.log(url);
-            const response = FilesApi.post(url, {
-                image: selectedImage
+<button
+    className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+    onClick={async () => {
+        console.log('Submitting form data:', selectedImage);
+        const url = 'upload/' + sessionStorage.getItem('username');
+        console.log(url);
+
+        let formData = new FormData();
+        formData.append('image', selectedImage);
+
+        try {
+            const response = await FilesApi.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-            console.log('Uploaded file successfully');
-        }}
-        disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
-    >
-        Submit
-    </button>
+            console.log('Uploaded file successfully:', response.data);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }}
+    disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
+>
+    Submit 
+</button>
+
             </div>
         </div>
     );
