@@ -32,6 +32,11 @@ function FileUpload() {
     return null;
   };
 
+  const handleBackFromMlUi = () => {
+    setShowMlUi(false); // Hide the MlUi component
+    setShowUploadButton(true); // Show the upload button again
+  };
+
   return (
     <div className="mt-0 bg-white h-screen w-screen sm:px-8 md:px-16 sm:py-8">
       <main className="container mx-auto max-w-screen-lg h-full">
@@ -109,7 +114,14 @@ function FileUpload() {
           </article>
         )}
 
-        {showMlUi && <MlUi images={file ? [passImageToMlUi()] : []} />} {/* Conditionally render the MlUi component */}
+        
+      {showMlUi && (
+          <MlUi
+            images={file ? [passImageToMlUi()] : []}
+            onBack={handleBackFromMlUi}
+          />
+        )}
+
 
       </main>
     </div>

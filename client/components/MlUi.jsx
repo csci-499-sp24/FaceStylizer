@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function MlUi({ images }) {
+function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
@@ -50,7 +50,7 @@ function MlUi({ images }) {
                         onClick={() => handleImageSelect(image, index)}
                     />
                 ))}
-
+          
                 {/* <label
                     htmlFor="file-upload"
                     className="w-40 h-40 mx-4 cursor-pointer border border-gray-300 rounded-lg flex justify-center items-center"
@@ -101,7 +101,14 @@ function MlUi({ images }) {
                     </div>
                 )}
             </div>
+            
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
+            <button
+                className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                onClick={onBack}
+            >
+                Back
+            </button>
                 <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onClick={handleImageRemove}
@@ -111,7 +118,7 @@ function MlUi({ images }) {
                 </button>
                 <select
                     id="restaurantImage"
-                    className="cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    className="text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onChange={handleStyleChange}
                 >
                     <option>Select FaceStylizer</option>
@@ -120,14 +127,25 @@ function MlUi({ images }) {
                     <option value="image3">STYLE 3</option>
                 </select>
 
-                {selectedStyle && (
+            
+
+                {/* {selectedStyle && (
                     <button
                         className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                         onClick={() => console.log("Submitted")} 
                     >
                         Submit
                     </button>
-                )}
+                )} */}
+
+
+        <button
+        className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+        onClick={() => console.log("Submitted")}
+        disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
+    >
+        Submit
+    </button>
             </div>
         </div>
     );
