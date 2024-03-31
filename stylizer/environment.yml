@@ -5,17 +5,17 @@ channels:
   - conda-forge
 dependencies:
   - pillow
-  - dlib
   - libjpeg-turbo
-  - opencv
   - wandb
   - gdown
   - matplotlib
   - python=3.8
   - pytorch
   - scipy
-  - torchvision==0.12.0
   - tqdm
   - pip:
+    - torchvision
     - fastapi[all]
     - fastapi-utilities
+    - mangum
+    - opencv-python-headless==4.5.3.56

@@ -1,0 +1,13 @@
+pillow
+cmake
+wandb
+gdown
+matplotlib
+torch
+scipy
+tqdm
+torchvision
+fastapi[all]
+fastapi-utilities
+mangum
+opencv-python-headless
