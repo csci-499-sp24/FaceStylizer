@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+// import FilesApi from "@/Api/FilesApi";
 
 function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
     const [displayedImages, setDisplayedImages] = useState(images || []);
+    const firstImageRef = useRef(null);
 
     const handleImageSelect = (image, index) => {
         setSelectedImage(image);
@@ -25,15 +27,6 @@ function MlUi({ images, onBack }) {
         }
     };
 
-    // const handleImageRemove = () => {
-    //     setSelectedImage(null);
-    //     setSelectedStyle(null);
-    // };
-
-    const handleStyleChange = (event) => {
-        setSelectedStyle(event.target.value); 
-    };
-    
     const handleImageRemove = (index) => {
         const updatedImages = [...displayedImages];
         updatedImages.splice(index, 1);
@@ -41,50 +34,39 @@ function MlUi({ images, onBack }) {
         setSelectedImage(null);
         setSelectedStyle(null);
     };
+
+    const handleStyleChange = (event) => {
+        setSelectedStyle(event.target.value); 
+    };
+
     useEffect(() => {
-        window.scrollTo(0, document.body.scrollHeight);
-    }, []); 
+        // Scroll to the bottom whenever selectedImage or selectedStyle changes
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    
+        // Trigger click on the first image when component mounts
+        if (firstImageRef.current) {
+            firstImageRef.current.click();
+        }
+    }, [selectedImage, selectedStyle]);
+    
 
     return (
         <div className="p-8 flex flex-col items-center min-h-screen bg-white">
-
             <div className="flex justify-center items-center mb-8 overflow-x-auto">
-            <h1 className="text-2xl font-bold text-yellow-500 animate-bounce">Click Image to FaceStylize</h1>
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-    </svg>
-                    {displayedImages.map((image, index) => (
+                {/* <h1 className="text-2xl font-bold text-yellow-500 animate-bounce">Click Image to FaceStylize</h1>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg> */}
+                {displayedImages.map((image, index) => (
                     <img
                         key={index}
+                        ref={index === 0 ? firstImageRef : null} // Assign ref to first image
                         src={image}
                         alt={`Image ${index}`}
                         className="w-40 h-40 mx-4 cursor-pointer border border-gray-300 rounded-lg"
                         onClick={() => handleImageSelect(image, index)}
                     />
                 ))}
-          
-                {/* <label
-                    htmlFor="file-upload"
-                    className="w-40 h-40 mx-4 cursor-pointer border border-gray-300 rounded-lg flex justify-center items-center"
-                >
-                    <span className="text-yellow-500 opacity-75">
-                        <svg
-                            className="w-24 h-24 animate-bounce"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="0.7"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                            />
-                        </svg>
-                    </span>
-                </label>
-                 */}
                 <input
                     type="file"
                     id="file-upload"
@@ -113,17 +95,16 @@ function MlUi({ images, onBack }) {
                     </div>
                 )}
             </div>
-            
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
-            <button
-                className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-                onClick={onBack}
-            >
-                Back
-            </button>
+                <button
+                    className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    onClick={onBack}
+                >
+                    Back
+                </button>
                 <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-                    onClick={handleImageRemove}
+                    onClick={() => handleImageRemove(currentImageIndex)}
                     disabled={!selectedImage}
                 >
                     Remove image
@@ -139,28 +120,40 @@ function MlUi({ images, onBack }) {
                     <option value="image3">STYLE 3</option>
                 </select>
 
-            
+                <button
+                    className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase                     tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    onClick={async () => {
+                        console.log('Submitting form data:', selectedImage);
+                        const url = 'upload/' + sessionStorage.getItem('username');
+                        console.log(url);
 
-                {/* {selectedStyle && (
-                    <button
-                        className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-                        onClick={() => console.log("Submitted")} 
-                    >
-                        Submit
-                    </button>
-                )} */}
-
-
-        <button
-        className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
-        onClick={() => console.log("Submitted")}
-        disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
-    >
-        Submit
-    </button>
+                        let formData = new FormData();
+                        if (selectedImage) {
+                            // Convert data URL to blob
+                            const response = await fetch(selectedImage);
+                            const blob = await response.blob();
+                            formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
+                        }
+                        
+                        try {
+                            const response = await FilesApi.post(url, formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            console.log('Uploaded file successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error uploading file:', error);
+                        }
+                    }}
+                    disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
+                >
+                    Submit 
+                </button>
             </div>
         </div>
     );
 }
 
 export default MlUi;
+
