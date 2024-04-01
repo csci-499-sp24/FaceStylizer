@@ -72,6 +72,28 @@ function SignUp() {
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
       }
+      // new try/catch here for google auth post request
+      try {
+        // Send the verified Google profile information to your backend endpoint
+        const response = await axios.post('/api/auth/google', {
+          email: user.profile.email,
+          // Include any other relevant profile information that you need
+        });
+  
+        // Extract the relevant data from the backend response
+        const { accessToken, profile } = response.data;
+  
+        // Update the global user state with the received data
+        signIn({ accessToken, profile });
+  
+        // Redirect the user or update the UI as needed
+        router.push('/account');
+      } catch (error) {
+        // Handle errors, such as displaying an error message to the user
+      }
+
+
+
     },
     onError: () => {
       console.error('Google login failed');

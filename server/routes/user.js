@@ -160,4 +160,36 @@ router.post('/users/login', async (req, res) => {
         });
 })
 
+router.post('/api/auth/google', async (req, res) => {
+    const { email } = req.body; // Extract the email sent from the frontend
+  
+    try {
+      let user = await User.findOne({ username: email });
+  
+      if (!user) {
+        // If the user does not exist, create a new user with the email as the username
+        user = new User({
+          username: email,
+          // No password is needed here since authentication is via Google
+        });
+        await user.save();
+      }
+  
+      // Generate a session token or other authentication means as needed
+      const accessToken = generateToken(user); // Implement this function based on your auth strategy
+  
+      // Return the user info and access token to the frontend
+      res.json({
+        message: 'User authenticated successfully',
+        accessToken,
+        profile: {
+          name: user.username,
+          // Include any other profile information you want to return to the frontend
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to authenticate user', error });
+    }
+  });
+
 module.exports = router;

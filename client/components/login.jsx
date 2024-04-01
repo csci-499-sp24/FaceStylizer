@@ -45,7 +45,7 @@ function Login() {
         
       });
       console.log('Login successful:', response.data);
-      sessionStorage.setItem('username', formData.username);
+      sessionStorage.setItem('username', formData.username); // add this to google auth (pass in the email)
       console.log('Redirecting to /home...');
       router.push('/account'); // Redirect to /home
     } catch (error) {
@@ -66,6 +66,8 @@ function Login() {
             Accept: 'application/json'
           }
         });
+
+        
         
         user.profile = res.data; // Include profile information in the user object
         console.log(user)
