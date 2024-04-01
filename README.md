@@ -53,16 +53,3 @@ Stop/Down docker containers
 docker-compose stop # pauses containers
 docker-compose down # brings down containers
 ```
-
-File S3 Object Requests Format
-```
-req.file = {
-    fieldname, // will be image for imageuploads
-    originalname, // name of user's file @ time of upload
-    mimetype, // AWS MIMEType
-    size, // size of payload
-    bucket, // bucket object belongs to
-    key, // our convention: username/id + "-" + timestamp + "-" + originalfilename
-    location // URL to S3 object
-}
-```
