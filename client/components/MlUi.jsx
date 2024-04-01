@@ -160,8 +160,13 @@ function MlUi({ images, onBack }) {
         console.log(url);
 
         let formData = new FormData();
-        formData.append('image', selectedImage);
-
+        if (selectedImage) {
+            // Convert data URL to blob
+            const response = await fetch(selectedImage);
+            const blob = await response.blob();
+            formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
+        }
+        
         try {
             const response = await FilesApi.post(url, formData, {
                 headers: {
