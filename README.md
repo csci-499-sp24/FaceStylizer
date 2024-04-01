@@ -53,3 +53,8 @@ Stop/Down docker containers
 docker-compose stop # pauses containers
 docker-compose down # brings down containers
 ```
+
+Unit Testing
+```
+npm test
+```
