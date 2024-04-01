@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import 'tailwindcss/tailwind.css';
 import MlUi from './MlUi';
 
+import FilesApi from "@/Api/FilesApi";
+
 function FileUpload() {
   const [file, setFile] = useState(null); // State for storing the selected file
   const [showDropMessage, setShowDropMessage] = useState(true);
