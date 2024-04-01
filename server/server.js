@@ -21,7 +21,10 @@ const mongoUrl      = process.env.MONGO_URL || "mongodb://root:password@localhos
 const mongooseUrl   = process.env.MONGOOSE_URL || `${mongoUrl}/${db_name}?authSource=admin`;
 
 //--Express router: import routes we defined
-const apiRouter = require('./routes/user');
+const apiRouter = require('./routes');
+
+// Dotenv configuration
+require('dotenv').config()
 
 //--Configure routes and error handling
 const configureApp = async () => {
