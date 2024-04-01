@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {User} = require("../models/User.js");
+const jwt = require('jsonwebtoken');
 
 //--Users Endpoints (CRUD)--
 
@@ -160,35 +161,54 @@ router.post('/users/login', async (req, res) => {
         });
 })
 
-router.post('/api/auth/google', async (req, res) => {
-    const { email } = req.body; // Extract the email sent from the frontend
-  
+
+const generateToken = (user) => {
+  const payload = {
+    id: user._id,
+    username: user.username
+  };
+
+  const secret = process.env.JWT_SECRET;
+
+  const options = {
+    expiresIn: '1h' // Token expires in 1 hour
+  };
+
+  return jwt.sign(payload, secret, options);
+};
+
+
+router.post('/users/auth/google', async (req, res) => {
+    console.log("this post api endpoint was hit")
+    const { email } = req.body;
+    console.log("this post call found:", email)
     try {
       let user = await User.findOne({ username: email });
-  
+      console.log("this is a user found during post call: ", user)
+
       if (!user) {
-        // If the user does not exist, create a new user with the email as the username
-        user = new User({
+        console.log("no user was found :(")
+        user = await User.create({
           username: email,
-          // No password is needed here since authentication is via Google
+          createdAt: new Date()
         });
         await user.save();
       }
+      console.log("user already exists, so")
   
-      // Generate a session token or other authentication means as needed
-      const accessToken = generateToken(user); // Implement this function based on your auth strategy
-  
-      // Return the user info and access token to the frontend
+      const accessToken = generateToken(user); 
+      
+      console.log("still inside the try logic")
       res.json({
         message: 'User authenticated successfully',
         accessToken,
         profile: {
           name: user.username,
-          // Include any other profile information you want to return to the frontend
         }
       });
     } catch (error) {
       res.status(500).json({ message: 'Failed to authenticate user', error });
+      console.log("post call error:", error)
     }
   });
 

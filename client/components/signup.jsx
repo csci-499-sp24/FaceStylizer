@@ -55,7 +55,7 @@ function SignUp() {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       console.log('Google login successful', tokenResponse);
-      const user = { accessToken: tokenResponse.access_token }; // Adjust based on actual token response structure
+      const user = { accessToken: tokenResponse.access_token }; 
 
       try {
         const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json`, {
@@ -65,35 +65,35 @@ function SignUp() {
           }
         });
         
-        user.profile = res.data; // Include profile information in the user object
+        user.profile = res.data; 
         console.log(user)
-        signIn(user);  // Update global user state
-        setModalOpen(false);  // Close the modal upon successful login
+        signIn(user); 
+        setModalOpen(false);  
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
       }
       // new try/catch here for google auth post request
+
       try {
-        // Send the verified Google profile information to your backend endpoint
-        const response = await axios.post('/api/auth/google', {
+       
+        console.log("About to make POST request to /users/auth/google with email:", user.profile.email);
+        // this post call is not recongized
+        console.log("this is the user prior to calling: ", user)
+        console.log("this is the email prior to calling: ", user.profile.email)
+
+        const response = await UsersApi.post('/auth/google', {
           email: user.profile.email,
-          // Include any other relevant profile information that you need
+         
         });
-  
-        // Extract the relevant data from the backend response
+        console.log("this is my post response", response)
         const { accessToken, profile } = response.data;
-  
-        // Update the global user state with the received data
+        
         signIn({ accessToken, profile });
   
-        // Redirect the user or update the UI as needed
         router.push('/account');
       } catch (error) {
-        // Handle errors, such as displaying an error message to the user
+        console.error('Error during POST to /users/auth/google:', error);
       }
-
-
-
     },
     onError: () => {
       console.error('Google login failed');
