@@ -8,7 +8,13 @@ Building a web application around JoJoGAN face stylization.
 cd /server
 npm install
 ```
-- Create .env and add PORT=8080
+- Create .env and add PORT=8080 as well as AWS credentials (region, access key, and access key id)
+```
+PORT=8080
+REGION="region"
+AWS_SECRET_ACCESS_KEY="secret-access-key"
+AWS_ACCESS_KEY_ID="access-key-id"
+```
 
 ```
 cd /client
@@ -46,4 +52,9 @@ Stop/Down docker containers
 ```
 docker-compose stop # pauses containers
 docker-compose down # brings down containers
+```
+
+Unit Testing
+```
+npm test
 ```
