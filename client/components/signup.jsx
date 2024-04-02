@@ -67,8 +67,9 @@ function SignUp() {
         
         user.profile = res.data; 
         console.log(user)
-        signIn(user); 
         setModalOpen(false);  
+        sessionStorage.setItem('username', user.profile.name);
+        router.push('/account'); // Redirect to /home
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
       }
@@ -86,11 +87,12 @@ function SignUp() {
          
         });
         console.log("this is my post response", response)
+
+
         const { accessToken, profile } = response.data;
-        
         signIn({ accessToken, profile });
   
-        router.push('/account');
+
       } catch (error) {
         console.error('Error during POST to /users/auth/google:', error);
       }
