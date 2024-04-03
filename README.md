@@ -1,5 +1,5 @@
 # FaceStylizer
-Building a web application around JoJoGAN face stylization
+Building a web application around JoJoGAN face stylization.
 
 # Setup 
 ## 1) Clone the repo ```git clone```
