@@ -22,6 +22,7 @@ services:
 
   frontend:
     image: facestylizer/frontend
+    platform: linux/amd64
     build: ./client
     ports:
       - 3000:3000

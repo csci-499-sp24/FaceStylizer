@@ -35,7 +35,7 @@ function Profile() {
       <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
         <div className="text-center mt-3 m-2">
           <h5 className="text-gray-600 font-bold">
-            {username}'s Profile
+            {username}&apos;s Profile
           </h5>
         </div>
         <ModalBody>
