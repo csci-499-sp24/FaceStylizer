@@ -2,7 +2,7 @@
 FROM continuumio/miniconda3
 
 # Set Working Dir
-WORKDIR /app
+# WORKDIR /
 
 # Copy src code
 COPY ./ ./
@@ -19,8 +19,5 @@ RUN echo "source activate jjgan" > ~/.bashrc
 # Attach env to PATH
 ENV PATH /opt/conda/envs/jjgan/bin:$PATH
 
-# Expose PORT
-EXPOSE 8080
-
 # Start the Handler
-CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "main:app", "--reload", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
