@@ -1,88 +1,89 @@
 import React, { useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import UsersApi from "@/Api/UsersApi";
-import 'tailwindcss/tailwind.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAuth } from '../context/authContext';
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import "tailwindcss/tailwind.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useAuth } from "../context/authContext";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
-import { Button, 
-  Modal, 
-  ModalBody, 
+import {
+  Button,
+  Modal,
+  ModalBody,
   ModalFooter,
   Form,
   FormGroup,
   InputGroup,
   InputGroupText,
   Label,
-  Input
- } from "reactstrap";
-
+  Input,
+} from "reactstrap";
 
 function Login() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState(null);
   const { signIn } = useAuth();
 
   const router = useRouter();
-    
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log(`${name} changed to:`, value); // Log the changed field and its value
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('Submitting form data:', formData); // Log the entire form data before submission
-      const response = await UsersApi.post('/login', {
-        
-          username: formData.username,
-          password: formData.password
-        
+      const response = await UsersApi.post("/login", {
+        username: formData.username,
+        password: formData.password,
       });
-      console.log('Login successful:', response.data);
-      sessionStorage.setItem('username', formData.username); // add this to google auth (pass in the email)
-      console.log('Redirecting to /home...');
-      router.push('/account'); // Redirect to /home
+      sessionStorage.setItem("username", formData.username); // add this to google auth (pass in the email)
+      router.push("/account"); // Redirect to /home
     } catch (error) {
-      console.error('Error logging in:', error);
-      console.log('Error response:', error.response); // Log error response
       setError(error.response.data.message);
     }
   };
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log('Google login successful', tokenResponse);
       const user = { accessToken: tokenResponse.access_token }; // Adjust based on actual token response structure
-  
-      try {
-        const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json`, {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-            Accept: 'application/json'
-          }
-        });
 
-        
-        
+      try {
+        const res = await axios.get(
+          `https://www.googleapis.com/oauth2/v3/userinfo?alt=json`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+              Accept: "application/json",
+            },
+          }
+        );
         user.profile = res.data; // Include profile information in the user object
-        console.log(user)
-        signIn(user);  // Update global user state
-        setModalOpen(false);  // Close the modal upon successful login
+        signIn(user); // Update global user state
+        setModalOpen(false); // Close the modal upon successful login
+        sessionStorage.setItem("username", user.profile.name);
+        router.push("/account"); // Redirect
       } catch (error) {
-        console.error('Failed to fetch user profile:', error);
+        console.error("Failed to fetch user profile:", error);
+      }
+
+      try {
+        const response = await UsersApi.post("/auth/google", {
+          email: user.profile.email,
+        });
+        const { accessToken, profile } = response.data;
+        signIn({ accessToken, profile });
+      } catch (error) {
+        console.error("Error during POST to /users/auth/google:", error);
       }
     },
     onError: () => {
-      console.error('Google login failed');
+      console.error("Google login failed");
       // Handle login errors here
-    }
+    },
   });
-  
 
   return (
     <>
@@ -95,16 +96,12 @@ function Login() {
       </button>
       <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
         <div className="text-center mt-3 m-2">
-          <h5 className="text-gray-600 font-bold">
-            Sign In
-          </h5>
+          <h5 className="text-gray-600 font-bold">Sign In</h5>
         </div>
         <ModalBody>
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="username">
-                Username
-              </Label>
+              <Label for="username">Username</Label>
               <Input
                 id="username"
                 name="username"
@@ -115,9 +112,7 @@ function Login() {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="password">
-                Password
-              </Label>
+              <Label for="password">Password</Label>
               <Input
                 id="password"
                 name="password"
@@ -130,36 +125,43 @@ function Login() {
 
             {error && <p className="text-red-500">{error}</p>}
             <div className="text-center">
-              <Button color="primary" outline type="submit">Sign In</Button>
+              <Button color="primary" outline type="submit">
+                Sign In
+              </Button>
             </div>
-            
           </Form>
 
           <br></br>
 
           <div className="text-center">
-          <h5 className="text-gray-600 font-bold">
-            or sign in with
-          </h5>
+            <h5 className="text-gray-600 font-bold">or sign in with</h5>
           </div>
           <div className=" btn-wrapper text-center mb-2">
-          <button
+            <button
               className="m-1 bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center text-base ease-linear transition-all duration-150"
               color="default"
               href="#"
               onClick={() => googleLogin()}
             >
-              <img alt="..." className="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
-              Google 
+              <img
+                alt="..."
+                className="w-5 mr-2"
+                src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"
+              />
+              Google
             </button>
-            
           </div>
-          
         </ModalBody>
-      
 
         <ModalFooter>
-          <Button color="secondary" outline type="button" onClick={() => setModalOpen(!modalOpen)}>Close</Button>
+          <Button
+            color="secondary"
+            outline
+            type="button"
+            onClick={() => setModalOpen(!modalOpen)}
+          >
+            Close
+          </Button>
         </ModalFooter>
       </Modal>
     </>
