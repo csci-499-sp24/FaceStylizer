@@ -8,7 +8,7 @@ Building a web application around JoJoGAN face stylization.
 cd /server
 npm install
 ```
-- Create .env and add PORT=8080 as well as AWS credentials (region, access key, and access key id)
+- Create .env and add:
 ```
 PORT=8080
 REGION="region"
@@ -18,8 +18,12 @@ AWS_ACCESS_KEY_ID="access-key-id"
 
 ```
 cd /client
+npm install
 ```
-Create .env.local and add NEXT_PUBLIC_SERVER_URL="http://localhost:8080"
+- Create .env and add:
+```
+NEXT_PUBLIC_IP = "<IP address of server>"
+```
 
 ## 3) Start Server and Client
 ```
