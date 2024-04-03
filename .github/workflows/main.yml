@@ -1,12 +1,21 @@
-name: 'coverage'
+name: "coverage"
 on:
     pull_request:
         branches:
-            - master
             - main
+            - dev
+            - Jest
 jobs:
-    coverage:
+    build:
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./server
         steps:
             - uses: actions/checkout@v3
-            - uses: ArtiomTr/jest-coverage-report-action@v2
+            - name: Install dependencies for test
+              run: |
+                  npm install cross-fetch
+                  npm install
+            - name: Test
+              run: npm test -- --coverage
