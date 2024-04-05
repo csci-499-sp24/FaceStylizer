@@ -1,23 +1,21 @@
-# Miniconda image from DockerHub
-FROM continuumio/miniconda3
+FROM python:3.8
 
-# Set Working Dir
-# WORKDIR /
+# Send print logs to container terminal
+ENV PYTHONUNBUFFERED True
 
-# Copy src code
-COPY ./ ./
+# Set the Working Directory
+ENV APP_HOME /
+WORKDIR $APP_HOME
 
-# Activate conda environment
-RUN conda env create -f environment.yml
+# Copy src code over to container
+COPY . ./
 
-# Install dependencies for OpenCV
-#RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
+# Expose PORT
+ENV PORT 8080
 
-# Source activate environment in bashrc config 
-RUN echo "source activate jjgan" > ~/.bashrc
+# Install Dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Attach env to PATH
-ENV PATH /opt/conda/envs/jjgan/bin:$PATH
+# Start handler
+CMD exec uvicorn main:app --host 0.0.0.0 --port ${PORT} --workers 1
 
-# Start the Handler
-CMD ["uvicorn", "main:app", "--reload", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]

@@ -40,6 +40,5 @@ async def getPretrainedStyle(inputFile: UploadFile = File(...)):
 
     return f"{OUTPUT_DIR}/{inputFile.filename}_4_results.jpg"
 
-
 if __name__ == "__main__":
-    uvicorn.run(app, port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
