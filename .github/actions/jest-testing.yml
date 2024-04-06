@@ -1,0 +1,18 @@
+name: 'coverage'
+with:
+  coverage-file: ./server/coverage/report.json
+  base-coverage-file: ./server/coverage/master/report.json
+  working-directory: ./server/
+  test-script: npm test
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+      - dev
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ArtiomTr/jest-coverage-report-action@v2
