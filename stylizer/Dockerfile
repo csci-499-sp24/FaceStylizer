@@ -1,11 +1,15 @@
-FROM python:3.8
+FROM ubuntu:20.04
+
+RUN apt update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    make \
+    build-essential \
+    cmake \
+    python3-pip \
+    git
 
 # Send print logs to container terminal
 ENV PYTHONUNBUFFERED True
-
-# Set the Working Directory
-ENV APP_HOME /
-WORKDIR $APP_HOME
 
 # Copy src code over to container
 COPY . ./
@@ -16,6 +20,9 @@ ENV PORT 8080
 # Install Dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Build DLIB
+RUN cd dlib && mkdir build && cd build && cmake ../ && cmake --build . && cd .. && python3 setup.py install
+
 # Start handler
-CMD exec uvicorn main:app --host 0.0.0.0 --port ${PORT} --workers 1
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
 

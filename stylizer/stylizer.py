@@ -28,7 +28,14 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
-def generatePretrainedStyle(input_filename):
+def generatePretrainedStyle(input_filename, input_dir, output_dir):
+    res = {
+            "model_reference" : "",
+            "input_face" : "",
+            "stylized" : "",
+            "results" : "",
+            "error_msg" : ""
+            }
     # 0) Setup
     setup()
 
@@ -39,8 +46,11 @@ def generatePretrainedStyle(input_filename):
     
     # 2) Process Source Image
     # INPUT_FILENAME = 'iu.jpeg'
-    FILEPATH = f'JoJoGAN/test_input/{input_filename}'
-    aligned_face, test_latent_space = setup_source_image(FILEPATH, DEVICE)
+    # FILEPATH = f'JoJoGAN/test_input/{input_filename}'
+    try:
+        aligned_face, test_latent_space = setup_source_image(input_dir, DEVICE)
+    except AssertionError as error:
+        print(error)
 
     # 3) Load Pretrained Model into Generator for finetuning
     PRETRAINED = 'disney'
@@ -61,12 +71,29 @@ def generatePretrainedStyle(input_filename):
                                                  test_latent_space)
 
     # 5) Concatenate Output (Base Style - Base Input Face - Stylized Face)
-    output_dir = "output_files"
     pretrained_style_reference, input_base_face, output_tensor = concat_output(PRETRAINED, aligned_face, output_style, transform, DEVICE)
-    save_image(pretrained_style_reference, f"{output_dir}/{input_filename}_1_pretrained_reference.jpg")
-    save_image(input_base_face, f"{output_dir}/{input_filename}_2_input_face.jpg")
-    save_image(output_style, f"{output_dir}/{input_filename}_3_stylized_face.jpg")
-    save_image(output_tensor,f"{output_dir}/{input_filename}_4_results.jpg", (1028, 3080, 3), 3)
+
+    # Save image of pretrained reference style used
+    model_reference = f"{output_dir}/{input_filename}_1_pretrained_reference.jpg"
+    save_image(pretrained_style_reference, model_reference)
+    res["model_reference"] = model_reference
+
+    # Save image of input face
+    input_face = f"{output_dir}/{input_filename}_2_input_face.jpg"
+    save_image(input_base_face, input_face)
+    res["input_face"] = input_face
+
+    # Save image of output stylized face
+    stylized = f"{output_dir}/{input_filename}_3_stylized_face.jpg"
+    save_image(output_style, stylized)
+    res["stylized"] = stylized
+
+    # Save image of combination of above 3
+    results = f"{output_dir}/{input_filename}_4_results.jpg"
+    save_image(output_tensor, results, (1028, 3080, 3), 3)
+    res["results"] = results
+    
+    return res
 
 def setup():
     # Set CUDNN benchmark to use pytorch

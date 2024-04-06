@@ -1,27 +1,48 @@
 # Setup
 
 ## Dependencies
-Install [Anaconda](https://www.anaconda.com/download)
-
-Install dependencies + activate env
-```
-conda env create -f environment.yml
+### Create environment
+```bash
+conda create -n jjgan
 conda activate jjgan
+pip install -r requirements.txt
 ```
 
-To Start FastAPI Web Server
-```
-uvicorn main:app --reload
-```
-## Jupyter Notebook
-Install python kernel for jupyter notebook
-```
-ipython kernel install --user --name=jjgan-kernel 
+### Clone dlib
+```bash
+git clone https://github.com/davisking/dlib.git
 ```
 
-To Start jupyter notebook
+### Build dlib from source
+```bash
+cd dlib
+mkdir build; cd build; cmake ..; cmake --build .
+cd ..
+python3 setup.py install
 ```
-jupyter notebook
+
+## Run Locally
+```
+python3 main.py
+```
+
+## Deploy to Google Cloud Run
+0) Install gcloud CLI
+1) Create project on Google Cloud & link billing account
+2) Declare env variables
+```bash
+export PROJECT_ID=<YOUR_UNIQUE_LOWER_CASE_PROJECT_ID>
+export APP=<APP_NAME>
+export REGION="us-east4"
+export TAG="gcr.io/$PROJECT_ID/$APP"
+```
+3) Build Docker image
+```bash
+docker build -t $TAG .
+```
+4) Deployment
+```bash
+gcloud run deploy $APP --image $TAG --platform managed --region $REGION --allow-unauthenticated
 ```
 
 
