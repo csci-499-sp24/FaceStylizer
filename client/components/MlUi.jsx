@@ -137,6 +137,8 @@ function MlUi({ images, onBack }) {
                         const url = 'upload/' + sessionStorage.getItem('username');
                         console.log(url);
 
+                        console.log(process.env.NODE_ENV);       
+                        console.log(`http://${process.env.NEXT_PUBLIC_IP}:8080/files/`);       
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
@@ -152,8 +154,10 @@ function MlUi({ images, onBack }) {
                                 }
                             });
                             console.log('Uploaded file successfully:', response.data);
+                            console.log(FilesApi.getUri);
                         } catch (error) {
                             console.error('Error uploading file:', error);
+                            console.log(FilesApi.getUri);
                         }
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
