@@ -22,7 +22,12 @@ python3 setup.py install
 ```
 
 ## Run Locally
+Make directory for uploaded static images to save to
+```bash
+mkdir static && cd static && mkdir uploads
 ```
+Start Flask Webserver
+```bash
 python3 main.py
 ```
 
