@@ -1,0 +1,16 @@
+name: jjgan
+channels:
+  - defaults
+dependencies:
+  - anaconda::pillow
+  - conda-forge::dlib
+  - conda-forge::opencv
+  - conda-forge::wandb
+  - gdown
+  - matplotlib
+  - python=3.8
+  - pytorch
+  - scipy
+  - torchvision==0.12.0
+  - tqdm
+  - conda-forge::libjpeg-turbo
