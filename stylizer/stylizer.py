@@ -36,6 +36,7 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir):
             "results" : "",
             "error_msg" : ""
             }
+    
     # 0) Setup
     setup()
 
@@ -199,4 +200,4 @@ def save_image(image, filename, shape=(1024, 1024, 3), rows=1, size=None, mode='
     img.save(filename)
 
 if __name__ == "__main__":
-    generatePretrainedStyle("chris_hemsworth.jpeg")
+    generatePretrainedStyle("JoJoGAN/test_input/chris_hemsworth.jpeg")

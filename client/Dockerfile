@@ -1,5 +1,5 @@
 # Create image based on the official Node image from dockerhub
-FROM node:21-alpine
+FROM --platform=linux/amd64 node:18.17-alpine
 
 # Copying src 
 COPY . /client/

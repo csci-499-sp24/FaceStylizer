@@ -53,5 +53,3 @@ gcloud builds submit --tag $TAG
 ```bash
 gcloud run deploy $APP --image $TAG --platform managed --region $REGION --allow-unauthenticated
 ```
-
-
