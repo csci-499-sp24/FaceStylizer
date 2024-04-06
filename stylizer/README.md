@@ -45,7 +45,11 @@ export TAG="gcr.io/$PROJECT_ID/$APP"
 ```bash
 docker build -t $TAG .
 ```
-4) Deployment
+4) Submit Build to Gcloud
+```bash
+gcloud builds submit --tag $TAG
+```
+5) Gcloud Deployment
 ```bash
 gcloud run deploy $APP --image $TAG --platform managed --region $REGION --allow-unauthenticated
 ```
