@@ -13,6 +13,10 @@
 {% if img %}
 <h1>Rendered Image</h1>
 <img src="{{ img }}">
+
+{% elif err %}
+<h1>Error Response</h1>
+<p> "{{err}}" </p>
 {% else %}
 <h1>Image will be rendered here...</h1>
 {% endif %}

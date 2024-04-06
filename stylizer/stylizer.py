@@ -34,7 +34,6 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir):
             "input_face" : "",
             "stylized" : "",
             "results" : "",
-            "error_msg" : ""
             }
     
     # 0) Setup
@@ -48,10 +47,7 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir):
     # 2) Process Source Image
     # INPUT_FILENAME = 'iu.jpeg'
     # FILEPATH = f'JoJoGAN/test_input/{input_filename}'
-    try:
-        aligned_face, test_latent_space = setup_source_image(input_dir, DEVICE)
-    except AssertionError as error:
-        print(error)
+    aligned_face, test_latent_space = setup_source_image(input_dir, DEVICE)
 
     # 3) Load Pretrained Model into Generator for finetuning
     PRETRAINED = 'disney'
