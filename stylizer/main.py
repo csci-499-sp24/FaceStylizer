@@ -3,13 +3,17 @@ from flask import Flask, flash, request, render_template, send_file
 from numpy import who
 from werkzeug.utils import secure_filename
 from stylizer import generatePretrainedStyle
-import shutil
-import glob, os
+from flask_cors import CORS
 
-UPLOAD_FOLDER = 'uploads/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'} # not currently used
 
+# Init Flask App
 app = Flask(__name__)
+
+# Add CORS middleware for Cross-Origin-Resource-Sharing
+CORS(app)
+
+# Add Upload Folder for uploaded images
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 
 @app.route("/")
