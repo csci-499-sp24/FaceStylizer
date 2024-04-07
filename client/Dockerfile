@@ -16,5 +16,7 @@ RUN npm install
 # Expose the port the app runs in
 EXPOSE 3000
  
+RUN npm run build
+
 # Serve the app
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

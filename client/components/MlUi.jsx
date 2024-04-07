@@ -137,6 +137,7 @@ function MlUi({ images, onBack }) {
                         const url = 'upload/' + sessionStorage.getItem('username');
                         console.log(url);
 
+                        console.log(process.env.NODE_ENV);       
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
