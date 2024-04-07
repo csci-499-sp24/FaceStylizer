@@ -141,6 +141,7 @@ function MlUi({ images, onBack }) {
                         
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
