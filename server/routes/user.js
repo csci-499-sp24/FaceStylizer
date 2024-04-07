@@ -184,27 +184,21 @@ const generateToken = (user) => {
 };
 
 
-router.post('/users/auth/google', async (req, res) => {
-    console.log("this post api endpoint was hit")
+router.post('/auth/google', async (req, res) => {
     const { email } = req.body;
-    console.log("this post call found:", email)
     try {
       let user = await User.findOne({ username: email });
-      console.log("this is a user found during post call: ", user)
 
       if (!user) {
-        console.log("no user was found :(")
         user = await User.create({
           username: email,
           createdAt: new Date()
         });
         await user.save();
       }
-      console.log("user already exists, so")
   
       const accessToken = generateToken(user); 
       
-      console.log("still inside the try logic")
       res.json({
         message: 'User authenticated successfully',
         accessToken,

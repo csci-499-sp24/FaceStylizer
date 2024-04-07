@@ -72,7 +72,7 @@ function SignUp() {
       // new try/catch here for google auth post request
 
       try {
-        const response = await UsersApi.post("/auth/google", {
+        const response = await UsersApi.post("auth/google", {
           email: user.profile.email,
         });
         const { accessToken, profile } = response.data;
