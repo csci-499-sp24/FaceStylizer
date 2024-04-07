@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import FilesApi from "@/Api/FilesApi";
+import StylizerApi from '@/Api/StylizerApi';
 
 function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
     const [displayedImages, setDisplayedImages] = useState(images || []);
+    const [stylizedImage, setStylizedImage] = useState(null);
     const firstImageRef = useRef(null);
 
     const handleImageSelect = (image, index) => {
@@ -136,8 +138,10 @@ function MlUi({ images, onBack }) {
                         console.log('Submitting form data:', selectedImage);
                         const url = 'upload/' + sessionStorage.getItem('username');
                         console.log(url);
+                        
+                        console.log(process.env.NODE_ENV)
+                        console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
 
-                        console.log(process.env.NODE_ENV);       
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
@@ -147,12 +151,15 @@ function MlUi({ images, onBack }) {
                         }
 
                         try {
-                            const response = await FilesApi.post(url, formData, {
+                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+                            const response = await StylizerApi.post("upload", formData, {
                                 headers: {
                                     'Content-Type': 'multipart/form-data'
                                 }
                             });
                             console.log('Uploaded file successfully:', response.data);
+                            setStylizedImage(URL.createObjectURL(response.data));
+
                         } catch (error) {
                             console.error('Error uploading file:', error);
                         }
@@ -162,6 +169,14 @@ function MlUi({ images, onBack }) {
                     Submit
                 </button>
 
+            </div>
+            
+            <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
+                <img
+                    src={stylizedImage}
+                    alt="Stylized Image"
+                    className="max-h-96 max-w-full"
+                />
             </div>
         </div>
     );
