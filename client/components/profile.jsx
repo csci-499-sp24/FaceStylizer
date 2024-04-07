@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
 import axios from "axios"; // Import axios if not already imported
+import { useHistory } from 'react-router-dom'; // Import useHistory hook for redirection
 
 
 function Profile() {
@@ -12,6 +13,8 @@ function Profile() {
   });
   const [error, setError] = useState(""); // Define error state
 
+
+    //Not working function still have to work
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "newUsername") {
@@ -83,6 +86,14 @@ function Profile() {
     fetchUsername();
   }, []);
 
+
+  //Not working function still have to work
+  const handleSignOut = () => {
+    sessionStorage.clear(); // Clear session storage
+    history.push('/login'); // Redirect to login page
+  };
+
+
   return (
     <>
       <button
@@ -95,6 +106,7 @@ function Profile() {
       <button
         className="mt-2 text-sm bg-white active:bg-blueGray-50 text-blueGray-700 px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center font-bold ease-linear transition-all duration-150"
         type="button"
+        onClick={handleSignOut}
       >
         Sign Out
       </button>
@@ -162,6 +174,43 @@ function Profile() {
 }
 
 export default Profile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*import React, { useState, useEffect } from "react";
