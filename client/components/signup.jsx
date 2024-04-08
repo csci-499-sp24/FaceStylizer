@@ -113,8 +113,6 @@ import React, { useState } from "react";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
 import UsersApi from "@/Api/UsersApi"; // Assuming correct import path
 import { useRouter } from 'next/router';
-import Validation from "./signupValidation"; // Import your signup validation function
-
 
 function SignUp() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -129,33 +127,8 @@ function SignUp() {
     console.log(`${name} changed to:`, value); // Log the changed field and its value
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     console.log('Submitting form data:', formData); // Log the entire form data before submission
-  //     const response = await UsersApi.post('/createUser', {
-  //       username: formData.username,
-  //       password: formData.password
-  //     });
-  //     console.log('Account created successfully:', response.data);
-  //     sessionStorage.setItem('username', formData.username);
-  //     console.log('Redirecting to /home...');
-  //     router.push('/account'); // Redirect to /home
-  //   } catch (error) {
-  //     console.error('Error creating account:', error);
-  //     console.log('Error response:', error.response); // Log error response
-  //     setError(error.response.data.message);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Call the signup validation function
-    const validationError = Validation(formData);
-    if (Object.keys(validationError).length > 0) {
-      // If there are validation errors, set the error state and return
-      setError(validationError);
-      return;
-    }
     try {
       console.log('Submitting form data:', formData); // Log the entire form data before submission
       const response = await UsersApi.post('/createUser', {
@@ -172,6 +145,7 @@ function SignUp() {
       setError(error.response.data.message);
     }
   };
+  
 
   return (
     <>
