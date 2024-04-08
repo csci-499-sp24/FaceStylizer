@@ -14,7 +14,6 @@ function Profile() {
   const [error, setError] = useState(""); // Define error state
 
 
-    //Not working function still have to work
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "newUsername") {
@@ -88,11 +87,15 @@ function Profile() {
 
 
   //Not working function still have to work
+  // const handleSignOut = () => {
+  //   sessionStorage.clear(); // Clear session storage
+  //   history.push('/login'); // Redirect to login page
+  // };
   const handleSignOut = () => {
     sessionStorage.clear(); // Clear session storage
-    history.push('/login'); // Redirect to login page
+    window.location.href = '/MlUi'; // Redirect to header page
   };
-
+  
 
   return (
     <>
@@ -174,8 +177,6 @@ function Profile() {
 }
 
 export default Profile;
-
-
 
 
 
