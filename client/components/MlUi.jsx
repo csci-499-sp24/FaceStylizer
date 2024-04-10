@@ -158,11 +158,11 @@ function MlUi({ images, onBack }) {
                                     'Content-Type': 'multipart/form-data'
                                 }
                             });
-                            console.log('Uploaded file successfully:', response.data);
+                            console.log('Success response', response.data);
                             setStylizedImage(URL.createObjectURL(response.data));
 
                         } catch (error) {
-                            console.error('Error uploading file:', error);
+                            console.error('Error Message:', await error.response.data.text())
                         }
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
