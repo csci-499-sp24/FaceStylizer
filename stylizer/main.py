@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, request, render_template, send_file
 from numpy import who
 from werkzeug.utils import secure_filename
-from stylizer import generatePretrainedStyle, setup_source_image
+from stylizer import generatePretrainedStyle
 from flask_cors import CORS
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'} # not currently used
