@@ -7,6 +7,7 @@ function MlUi({ images, onBack }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
     const [displayedImages, setDisplayedImages] = useState(images || []);
+    const [stylizedImage, setStylizedImage] = useState(null);
     const firstImageRef = useRef(null);
     const stylizerCloudRunEndpoint = "https://stylizer-xry5ww6xvq-uk.a.run.app/upload";
 
@@ -138,6 +139,9 @@ function MlUi({ images, onBack }) {
                         console.log('Submitting form data:', selectedImage);
                         const url = 'upload/' + sessionStorage.getItem('username') + "2";
                         console.log(url);
+                        
+                        console.log(process.env.NODE_ENV)
+                        console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
 
                         let formData = new FormData();
                         if (selectedImage) {
@@ -148,12 +152,15 @@ function MlUi({ images, onBack }) {
                         }
 
                         try {
-                            const response = await StylizerApi.get("", formData, {
+                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+                            const response = await StylizerApi.post("upload", formData, {
                                 headers: {
                                     'Content-Type': 'multipart/form-data'
                                 }
                             });
                             console.log('Uploaded file successfully:', response.data);
+                            setStylizedImage(URL.createObjectURL(response.data));
+
                         } catch (error) {
                             console.error('Error uploading file:', error);
                         }
@@ -163,6 +170,14 @@ function MlUi({ images, onBack }) {
                     Submit
                 </button>
 
+            </div>
+            
+            <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
+                <img
+                    src={stylizedImage}
+                    alt="Stylized Image"
+                    className="max-h-96 max-w-full"
+                />
             </div>
         </div>
     );
