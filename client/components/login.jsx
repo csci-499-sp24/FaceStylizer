@@ -1,26 +1,47 @@
-import React from "react";
-import 'tailwindcss/tailwind.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-// reactstrap components
-import { Button, 
-  Modal, 
-  ModalBody, 
-  ModalFooter,
-  Form,
-  FormGroup,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Input
- } from "reactstrap";
+import React, { useState } from "react";
+import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
+import { useRouter } from 'next/router';
+import UsersApi from "@/Api/UsersApi";
 
 function Login() {
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [error, setError] = useState(null);
+
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    console.log(`${name} changed to:`, value); // Log the changed field and its value
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log('Submitting form data:', formData); // Log the entire form data before submission
+      const response = await UsersApi.post('/login', {
+        
+          username: formData.username,
+          password: formData.password
+        
+      });
+      console.log('Login successful:', response.data);
+      sessionStorage.setItem('username', formData.username);
+      console.log('Redirecting to /home...');
+      router.push('/account'); // Redirect to /home
+    } catch (error) {
+      console.error('Error logging in:', error);
+      console.log('Error response:', error.response); // Log error response
+      setError(error.response.data.message);
+    }
+  };
+  
+
   return (
     <>
       <button
-        className="mt-2 text-sm bg-white active:bg-blueGray-50 text-blueGray-700 px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center font-bold ease-linear transition-all duration-150" 
+        className="mt-2 text-sm bg-white active:bg-blueGray-50 text-blueGray-700 px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center font-bold ease-linear transition-all duration-150"
         type="button"
         onClick={() => setModalOpen(!modalOpen)}
       >
@@ -33,64 +54,41 @@ function Login() {
           </h5>
         </div>
         <ModalBody>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="exampleEmail">
-                Email
+              <Label for="username">
+                Username
               </Label>
-                <Input
-                  id="exampleEmail"
-                  name="email"
-                  placeholder="Email"
-                  type="email"
-                />
+              <Input
+                id="username"
+                name="username"
+                placeholder="Username"
+                type="text"
+                value={formData.username}
+                onChange={handleChange}
+              />
             </FormGroup>
             <FormGroup>
-              <Label for="examplePassword">
+              <Label for="password">
                 Password
               </Label>
               <Input
-                id="examplePassword"
+                id="password"
                 name="password"
                 placeholder="Password"
                 type="password"
+                value={formData.password}
+                onChange={handleChange}
               />
             </FormGroup>
+            {error && <p className="text-red-500">{error}</p>}
+            <div className="text-center">
+              <Button color="primary" outline type="submit">Sign In</Button>
+            </div>
           </Form>
-        <div class="text-center">
-          <Button color="primary" 
-          outline 
-          type="button"
-          class="btn btn-primary">
-            Sign In
-          </Button>
-        </div>
         </ModalBody>
-          <div className="text-center">
-            <h5 className="text-gray-600 font-bold">
-              or sign in with
-            </h5>
-          </div>
-          <div className=" btn-wrapper text-center mb-2">
-            <button
-                className="m-1 bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center text-base ease-linear transition-all duration-150"
-                color="default"
-                href="#"
-                onClick={(e) => e.preventDefault()}
-              >
-                <img alt="..." class="w-5 mr-2" src="https://demos.creative-tim.com/notus-js/assets/img/google.svg"/>
-                Google 
-              </button>
-          </div>
         <ModalFooter>
-          <Button
-            color="secondary"
-            outline
-            type="button"
-            onClick={() => setModalOpen(!modalOpen)}
-          >
-            Close
-          </Button>
+          <Button color="secondary" outline type="button" onClick={() => setModalOpen(!modalOpen)}>Close</Button>
         </ModalFooter>
       </Modal>
     </>

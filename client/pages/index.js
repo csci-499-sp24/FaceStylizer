@@ -3,17 +3,15 @@ import CenteredImage from "@/components/mainimage";
 import FileUpload from "@/components/upload";
 import ArrowDown from "@/components/arrow";
 import React from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import App from "./app"
 
 function Index() {
   return (
-
-// fix the changes i made previously with navbar (index.js/app.js)
-    <div>
-      <RHeader/>
-      <CenteredImage/>
-      <FileUpload/>
-     
-    </div>
+    <GoogleOAuthProvider clientId="593381902699-jdfocdq7nnpnsbjehq5sedfs6cf8k7b8.apps.googleusercontent.com">
+        <App/>
+    </GoogleOAuthProvider>
+    
   );
 }
 
