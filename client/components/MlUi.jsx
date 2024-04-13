@@ -9,7 +9,6 @@ function MlUi({ images, onBack }) {
     const [displayedImages, setDisplayedImages] = useState(images || []);
     const [stylizedImage, setStylizedImage] = useState(null);
     const firstImageRef = useRef(null);
-    const stylizerCloudRunEndpoint = "https://stylizer-xry5ww6xvq-uk.a.run.app/upload";
 
     const handleImageSelect = (image, index) => {
         setSelectedImage(image);
@@ -138,8 +137,6 @@ function MlUi({ images, onBack }) {
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onClick={async () => {
                         console.log('Submitting form data:', selectedImage);
-                        const url = 'upload/' + sessionStorage.getItem('username') + "2";
-                        console.log(url);
                         
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
