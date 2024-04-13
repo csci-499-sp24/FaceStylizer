@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/router';
 import Profile from '@/components/profile';
 import RHeader from "@/components/header";
 import UpdateUsername from "@/components/changeusername";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
+import ChangePassword from "@/components/changepassword";
 
 
 const ProfileCard = () => {
@@ -12,8 +13,17 @@ const ProfileCard = () => {
   const [username, setUsername] = useState("");
   const [open, setOpen] = useState(true);
   const [showUpdateUsername, setShowUpdateUsername] = useState(false);
+  const [imagesExpanded, setImagesExpanded] = useState(false);
+  const imagesContainerRef = useRef(null); 
 
-
+  const toggleImagesExpanded = () => {
+    setImagesExpanded(!imagesExpanded);
+  
+    if (!imagesExpanded && imagesContainerRef.current) {
+      imagesContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  
   const handleSubmit = async (e) => {
     sessionStorage.clear();
   };
@@ -54,7 +64,7 @@ const toggleUpdateUsernameModal = () => {
           <div className="place-content-center"></div>
           <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
             <button className="text-white py-2 px-4 uppercase rounded bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-              Change Password
+              <ChangePassword/>
             </button>
             <button
             className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
@@ -79,6 +89,30 @@ const toggleUpdateUsernameModal = () => {
           <p className="text-gray-600 text-center font-light lg:px-16">
            <b> Thank you for being part of FaceStylizer Family</b>
           </p>
+
+
+          <div className="mt-4 text-center">
+          <button className="text-gray-600 text-center font-light lg:px-16 border-b pb-2 focus:outline-none" onClick={toggleImagesExpanded}>
+            {imagesExpanded ? "Hide" : "Show"} Your Stylized Images
+          </button>
+          {imagesExpanded && (
+            <div className="mt-4">
+              <div className="flex flex-wrap justify-center">
+                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+                  <span>Image 1</span>
+                </div>
+                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+                  <span>Image 2</span>
+                </div>
+                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+                  <span>Image 3</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+
           <button
             onClick={handleNavigateHome}
              className="mt-5 rounded-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none animate-bounce text-base flex items-center justify-center"

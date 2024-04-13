@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
 import { useRouter } from 'next/router';
 import UsersApi from "@/Api/UsersApi"; 
 
 function UpdateUsername() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ newUsername: '', currentUsername: '' });
+  const [formData, setFormData] = useState({ username: '', currentUsername: '' });
   const [error, setError] = useState(null);
 
   const router = useRouter();
@@ -15,28 +15,55 @@ function UpdateUsername() {
     setFormData({ ...formData, [name]: value });
     console.log(`${name} changed to:`, value); 
   };
+  useEffect(() => {
+    const currentUsername = sessionStorage.getItem('username');
+    setFormData({ ...formData, currentUsername });
+  }, []);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('Submitting form data for username change:', formData);
-      
-      const response = await UsersApi.put('/updateUser', {
-        currentUsername: formData.currentUsername,
-        newUsername: formData.newUsername
-      });
-      
-      console.log('Username update successful:', response.data);
-      sessionStorage.setItem('username', formData.newUsername); 
-      setModalOpen(false);
-      window.location.reload(); // Reload the page
-      
+        const currentUsername = sessionStorage.getItem('username');
+        let currentUserId; 
+    
+        
+        const userResponse = await UsersApi.get('/readUser', { username: currentUsername });
+        const userObject = userResponse.data.message;
+
+        console.log(userResponse);
+        console.log(userResponse.data);
+
+        
+        
+        console.log('User object:', userObject); 
+
+        if (!userObject) {
+            throw new Error('User not found'); 
+        }
+
+        currentUserId = userObject._id;
+        sessionStorage.setItem('_id', currentUserId); 
+
+        const response = await UsersApi.put(`/updateUser/${currentUserId}`, {
+            username: formData.username,
+        });
+
+        console.log('Username update successful:', response.data);
+        sessionStorage.setItem('username', formData.username); 
+        setModalOpen(false);
+        window.location.reload();
     } catch (error) {
-      console.error('Error updating username:', error);
-      setError(error.response ? error.response.data.message : "An unexpected error occurred");
+        console.error('Error updating username:', error);
+        setError(error.message || "An unexpected error occurred");
     }
-  };
-  
+};
+
+
+
+
+
 
   return (
     <>
@@ -44,7 +71,7 @@ function UpdateUsername() {
       type="button"
       onClick={() => setModalOpen(!modalOpen)}
     >
-      Change Username
+      CHANGE USERNAME
     </button>
     <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
       <div className="text-center mt-3 m-2">
@@ -68,15 +95,15 @@ function UpdateUsername() {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="newUsername">
+            <Label for="username">
               New Username
             </Label>
             <Input
-              id="newUsername"
-              name="newUsername"
+              id="username"
+              name="username"
               placeholder="New Username"
               type="text"
-              value={formData.newUsername}
+              value={formData.username}
               onChange={handleChange}
             />
           </FormGroup>
