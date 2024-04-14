@@ -33,20 +33,15 @@ def home():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             input_img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-            # stylize image
+            # Stylize image
             try:
                 res = generatePretrainedStyle(file.filename, input_img_path, app.config['UPLOAD_FOLDER'])
 
                 # send result back to client
                 return send_file(res["results"], mimetype='image/jpg')
-
             except AssertionError as error:
                 print(error)
-                return render_template("index.html", err = error)
-            except UnboundLocalError as error:
-                print(error)
-                return render_template("index.html", err = error)
-            
+                return str(error), 400
             
     return render_template('index.html')
 
