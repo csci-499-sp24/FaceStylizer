@@ -9,6 +9,9 @@ function MlUi({ images, onBack }) {
     const [displayedImages, setDisplayedImages] = useState(images || []);
     const [stylizedImage, setStylizedImage] = useState(null);
     const firstImageRef = useRef(null);
+    //adds a new state to track loading spinner
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(null);
 
     const handleImageSelect = (image, index) => {
         setSelectedImage(image);
@@ -136,6 +139,8 @@ function MlUi({ images, onBack }) {
                 <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onClick={async () => {
+                        setIsLoading(true);
+                        setIsError(null);
                         console.log('Submitting form data:', selectedImage);
                         
                         console.log(process.env.NODE_ENV)
@@ -162,14 +167,18 @@ function MlUi({ images, onBack }) {
                             setStylizedImage(URL.createObjectURL(response.data));
 
                         } catch (error) {
+                            setIsError(error.message);
                             console.error('Error Message:', await error.response.data.text())
+                        } finally {
+                            setIsLoading(false);
                         }
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
                 >
                     Submit
                 </button>
-
+                {isLoading && <img src="../public/loading.svg" alt="Loading..." />}
+                {isError && window.alert(isError)}
             </div>
             
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
