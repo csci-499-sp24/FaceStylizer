@@ -11,6 +11,7 @@ function MlUi({ images, onBack }) {
     const firstImageRef = useRef(null);
     //adds a new state to track loading spinner
     const [isLoading, setIsLoading] = useState(false);
+    // adds a new state to track error message
     const [isError, setIsError] = useState(null);
 
     const handleImageSelect = (image, index) => {
@@ -157,6 +158,7 @@ function MlUi({ images, onBack }) {
                         }
 
                         try {
+                            setIsLoading(true);
                             console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                             const response = await StylizerApi.post("upload", formData, {
                                 headers: {
@@ -169,7 +171,10 @@ function MlUi({ images, onBack }) {
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
                             setIsError(await error.response.data.text());
+                            // setIsError("Error: Please try again later."); //for testing
+                            // setIsLoading(true);
                             window.alert(await error.response.data.text());
+                            // window.alert("Error: Please try again later."); //for testing
                         } finally {
                             setIsLoading(false);
                         }
@@ -178,8 +183,26 @@ function MlUi({ images, onBack }) {
                 >
                     Submit
                 </button>
-                {isLoading && <img src="/loading.svg" alt="Loading..." />}
-                {/*isError && window.alert(isError)*/} 
+                {isLoading && (
+                <div className="loading-overlay">
+                    <img src="/loading.svg" alt="Loading..." />
+                </div>
+                )}
+                <style jsx>{`
+                    .loading-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        z-index: 1000;
+                    }
+            `   }</style>
+                {/** isError && window.alert("Error: Please try again later.") **/ /** for testing */} 
             </div>
             
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
