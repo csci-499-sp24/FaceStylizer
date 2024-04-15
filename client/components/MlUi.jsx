@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
+import {CircularProgress} from "@nextui-org/react";
 
 function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -177,7 +178,7 @@ function MlUi({ images, onBack }) {
                 >
                     Submit
                 </button>
-                {isLoading && <img src="../public/loading.svg" alt="Loading..." />}
+                {isLoading && <CircularProgress aria-label="Loading..." />}
                 {isError && window.alert(isError)}
             </div>
             

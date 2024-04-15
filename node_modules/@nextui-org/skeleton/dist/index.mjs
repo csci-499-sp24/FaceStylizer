@@ -1,0 +1,10 @@
+import {
+  skeleton_default
+} from "./chunk-26CMBM6O.mjs";
+import {
+  useSkeleton
+} from "./chunk-Q572LSEI.mjs";
+export {
+  skeleton_default as Skeleton,
+  useSkeleton
+};
