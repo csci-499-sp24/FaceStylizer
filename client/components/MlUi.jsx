@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
-import {CircularProgress} from "@nextui-org/react";
 
 function MlUi({ images, onBack }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -170,6 +169,7 @@ function MlUi({ images, onBack }) {
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
                             setIsError(await error.response.data.text());
+                            window.alert(await error.response.data.text());
                         } finally {
                             setIsLoading(false);
                         }
@@ -178,8 +178,8 @@ function MlUi({ images, onBack }) {
                 >
                     Submit
                 </button>
-                {isLoading && <CircularProgress aria-label="Loading..." />}
-                {isError && window.alert(isError)}
+                {isLoading && <img src="/loading.svg" alt="Loading..." />}
+                {/*isError && window.alert(isError)*/} 
             </div>
             
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
