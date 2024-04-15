@@ -28,7 +28,7 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
-def generatePretrainedStyle(input_filename, input_dir, output_dir):
+def generatePretrainedStyle(input_filename, input_dir, output_dir, pretrained_model_name):
     res = {
             "model_reference" : "",
             "input_face" : "",
@@ -45,13 +45,10 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir):
     orig_generator, orig_mean_latent, test_generator, transform = load_pretrained_stylegan(LATENT_DIM, DEVICE)
     
     # 2) Process Source Image
-    # INPUT_FILENAME = 'iu.jpeg'
-    # FILEPATH = f'JoJoGAN/test_input/{input_filename}'
-    aligned_face, test_latent_space = setup_source_image(input_dir, DEVICE)
+    aligned_face, test_latent_space = setup_source_image(input_dir)
 
     # 3) Load Pretrained Model into Generator for finetuning
-    PRETRAINED = 'disney'
-    PRETRAINED_MODEL = f'{PRETRAINED}_preserve_color.pt'
+    PRETRAINED_MODEL = f'{pretrained_model_name}_preserve_color.pt'
     ckpt = torch.load(os.path.join('JoJoGAN/models', PRETRAINED_MODEL), map_location=lambda storage, loc: storage)
     test_generator.load_state_dict(ckpt["g"], strict=False)
 
@@ -68,7 +65,7 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir):
                                                  test_latent_space)
 
     # 5) Concatenate Output (Base Style - Base Input Face - Stylized Face)
-    pretrained_style_reference, input_base_face, output_tensor = concat_output(PRETRAINED, aligned_face, output_style, transform, DEVICE)
+    pretrained_style_reference, input_base_face, output_tensor = concat_output(pretrained_model_name, aligned_face, output_style, transform, DEVICE)
 
     # Save image of pretrained reference style used
     model_reference = f"{output_dir}/{input_filename}_1_pretrained_reference.jpg"
@@ -106,7 +103,11 @@ def setup():
     ensure_checkpoint_exists('JoJoGAN/models/stylegan2-ffhq-config-f.pt')
     ensure_checkpoint_exists('JoJoGAN/models/dlibshape_predictor_68_face_landmarks.dat')
     ensure_checkpoint_exists('JoJoGAN/models/e4e_ffhq_encode.pt')
+
     ensure_checkpoint_exists('JoJoGAN/models/disney_preserve_color.pt')
+    ensure_checkpoint_exists('JoJoGAN/models/jojo_preserve_color.pt')
+    ensure_checkpoint_exists('JoJoGAN/models/jojo_yasuho_preserve_color.pt')
+    ensure_checkpoint_exists('JoJoGAN/models/arcane_jinx_preserve_color.pt')
 
 def load_pretrained_stylegan(latent_dim, device):
     # Load original generator
@@ -128,7 +129,8 @@ def load_pretrained_stylegan(latent_dim, device):
     
     return original_generator, mean_latent, generator, transform
 
-def setup_source_image(filepath, device):
+def setup_source_image(filepath):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     name = strip_path_extension(filepath)+'.pt'
 
     # Aligns and crops face from the source image
@@ -145,12 +147,12 @@ def train_pretrained_generator_on(seed, n_sample, latent_dim, device, original_g
 
     with torch.no_grad():
         test_generator.eval()
-        z = torch.randn(n_sample, latent_dim, device=device)
+        # z = torch.randn(n_sample, latent_dim, device=device)
 
-        original_sample = original_generator([z], truncation=0.7, truncation_latent=original_mean_latent)
-        sample = test_generator([z], truncation=0.7, truncation_latent=original_mean_latent)
-
-        original_my_sample = original_generator(test_latent_space, input_is_latent=True)
+        # original_sample = original_generator([z], truncation=0.7, truncation_latent=original_mean_latent)
+        # sample = test_generator([z], truncation=0.7, truncation_latent=original_mean_latent)
+        #
+        # original_my_sample = original_generator(test_latent_space, input_is_latent=True)
         res = test_generator(test_latent_space, input_is_latent=True)
 
     return res
