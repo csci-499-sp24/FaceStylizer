@@ -167,8 +167,8 @@ function MlUi({ images, onBack }) {
                             setStylizedImage(URL.createObjectURL(response.data));
 
                         } catch (error) {
-                            setIsError(error.message);
                             console.error('Error Message:', await error.response.data.text())
+                            setIsError(await error.response.data.text());
                         } finally {
                             setIsLoading(false);
                         }
