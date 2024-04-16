@@ -116,10 +116,9 @@ function MlUi({ images, onBack }) {
                     onChange={handleStyleChange}
                 >
                     <option>Select FaceStylizer</option>
-                    <option value="disney">Disney</option>
-                    <option value="jojo">JoJo</option>
-                    <option value="jojo_yasuho">JoJo Yasuho</option>
-                    <option value="arcane_jinx">Arcane Jinx</option>
+                    <option value="image1">STYLE 1</option>
+                    <option value="image2">STYLE 2</option>
+                    <option value="image3">STYLE 3</option>
                 </select>
 
 
@@ -140,15 +139,13 @@ function MlUi({ images, onBack }) {
                         
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                        console.log(selectedStyle)
 
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
                             const response = await fetch(selectedImage);
                             const blob = await response.blob();
-                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
-                            formData.append('style', selectedStyle); // Attach selected style to payload
+                            formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
                         }
 
                         try {

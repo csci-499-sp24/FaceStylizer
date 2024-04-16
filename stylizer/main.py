@@ -6,7 +6,6 @@ from stylizer import generatePretrainedStyle
 from flask_cors import CORS
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'} # not currently used
-ALLOWED_MODELS = ["disney", "arcane_jinx", "jojo", "jojo_yasuho"]
 
 # Init Flask App
 app = Flask(__name__)
@@ -24,9 +23,8 @@ def hello_world():
 @app.route('/upload', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        print(request.form)
         # check if the post request has the image part
-        if 'image' in request.files and 'style' in request.form:
+        if 'image' in request.files:
             # grab image from request
             file = request.files['image']
             filename = secure_filename(file.filename)
@@ -37,8 +35,7 @@ def home():
 
             # Stylize image
             try:
-                model = request.form['style']
-                res = generatePretrainedStyle(file.filename, input_img_path, app.config['UPLOAD_FOLDER'], model)
+                res = generatePretrainedStyle(file.filename, input_img_path, app.config['UPLOAD_FOLDER'])
 
                 # send result back to client
                 return send_file(res["results"], mimetype='image/jpg')
