@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {User} = require("../models/User.js");
+const jwt = require('jsonwebtoken');
 
 //--Users Endpoints (CRUD)--
 
@@ -165,5 +166,50 @@ router.post('/login', async (req, res) => {
             res.status(404).send({message: `No such user exists with username ${req.body.username}`});
         });
 })
+
+
+const generateToken = (user) => {
+  const payload = {
+    id: user._id,
+    username: user.username
+  };
+
+  const secret = process.env.JWT_SECRET;
+
+  const options = {
+    expiresIn: '1h' // Token expires in 1 hour
+  };
+
+  return jwt.sign(payload, secret, options);
+};
+
+
+router.post('/auth/google', async (req, res) => {
+    const { email } = req.body;
+    try {
+      let user = await User.findOne({ username: email });
+
+      if (!user) {
+        user = await User.create({
+          username: email,
+          createdAt: new Date()
+        });
+        await user.save();
+      }
+  
+      const accessToken = generateToken(user); 
+      
+      res.json({
+        message: 'User authenticated successfully',
+        accessToken,
+        profile: {
+          name: user.username,
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to authenticate user', error });
+      console.log("post call error:", error)
+    }
+  });
 
 module.exports = router;
