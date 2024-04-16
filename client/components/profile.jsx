@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
+import { useRouter } from 'next/router';
+
 
 function Profile() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -7,8 +9,17 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     sessionStorage.clear();
+    router.push('/'); 
+
   };
   
+  const router = useRouter(); 
+
+
+
+  const handleNavigateProfile = () => {
+    router.push('/profile'); 
+};
   useEffect(() => {
     const fetchUsername = () => {
     try {
@@ -37,7 +48,15 @@ function Profile() {
           <h5 className="text-gray-600 font-bold">
             {username}&apos;s Profile
           </h5>
+          <button
+            onClick={handleNavigateProfile}
+             className="mt-5 rounded-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none text-base flex items-center justify-center"
+            style={{ maxWidth: "100px", overflow: "hidden", margin: "0 auto" }}
+          >
+            Profile
+          </button>
         </div>
+
         <ModalBody>
           <Form onSubmit={handleSubmit}>
             <div className="text-center">
