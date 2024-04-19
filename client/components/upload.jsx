@@ -7,6 +7,7 @@ function FileUpload() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedStyle, setSelectedStyle] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     // const [displayedImages, setDisplayedImages] = useState(images || []);
     const [stylizedImage, setStylizedImage] = useState(null);
     const firstImageRef = useRef(null);
@@ -79,14 +80,14 @@ function FileUpload() {
     };
 
     return (
-      <div style={{ backgroundColor: '#ecf39e' }} className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
+      <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
       <div
         {...getRootProps({ className: "dropzone" })}
         className="w-full max-w-4xl"
       >
         <input {...getInputProps()} />
         <div 
-          className={`border-solid border-4 border-gray-600 rounded-lg p-4 ${
+          className={` rounded-lg p-4 ${
             selectedImage ? "" : "border-gray-300"
           }`}
         >
@@ -114,21 +115,21 @@ function FileUpload() {
                 className="absolute top-0 right-0 m-2 bg-white rounded-full p-1 shadow-lg"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
-</svg>
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+      </svg>
 
               </button>
 
               
               <button
-  onClick={handleClearImage}
-  className="absolute top-0 right-10 m-2 bg-white rounded-full p-1 shadow-lg"
+        onClick={handleClearImage}
+      className="absolute top-0 right-10 m-2 bg-white rounded-full p-1 shadow-lg"
 >
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-</svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+     <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+      </svg>
 
-</button>
+        </button>
 
             </div>
           )}
@@ -147,7 +148,7 @@ function FileUpload() {
                     <option value="arcane_jinx">Arcane Jinx</option>
                 </select>
                 </div>
-      </div>
+           </div>
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
                 {/* <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
@@ -178,8 +179,10 @@ function FileUpload() {
                 <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onClick={async () => {
-
-                      window.scrollTo(0, document.body.scrollHeight);
+                      setIsLoading(true); 
+                      setTimeout(() => {
+                        window.scrollTo(0, document.body.scrollHeight);
+                      }, 100);
                         console.log('Submitting form data:', selectedImage);
                         
                         console.log(process.env.NODE_ENV)
@@ -215,25 +218,28 @@ function FileUpload() {
                 </button>
 
             </div>
-      
+            {isLoading && ( 
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
-    <div className="bg-gray-200 h-96 w-full flex justify-center items-center">
+          <div className="bg-gray-200 h-96 w-full flex justify-center items-center">
        {!stylizedImage && (
           <svg className="animate-spin h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.001 8.001 0 0117.709 5.29h2.004A10.001 10.001 0 002.002 12H6v-.009z"></path>
         </svg>
         )}
-     {stylizedImage && (
+        {stylizedImage && (
             <img
                 src={stylizedImage}
                 alt="Stylized Image"
                 className="max-h-96 max-w-full"
             />
         )}
+       </div>
     </div>
-</div>
+            )}
 
+
+{isLoading && (
 <div>
 
                 <button
@@ -279,7 +285,7 @@ function FileUpload() {
                 >
                     Save Image
                 </button>
-                </div>
+                </div>)}
         </div>
     );
 }
