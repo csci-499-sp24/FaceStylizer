@@ -11,7 +11,6 @@ const StylizerApi = axios.create({
         "Content-Type": "application/json"
     },
     responseType: 'blob'
-
 });
 
 export default StylizerApi;

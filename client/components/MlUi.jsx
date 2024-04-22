@@ -116,9 +116,10 @@ function MlUi({ images, onBack }) {
                     onChange={handleStyleChange}
                 >
                     <option>Select FaceStylizer</option>
-                    <option value="image1">STYLE 1</option>
-                    <option value="image2">STYLE 2</option>
-                    <option value="image3">STYLE 3</option>
+                    <option value="disney">Disney</option>
+                    <option value="jojo">JoJo</option>
+                    <option value="jojo_yasuho">JoJo Yasuho</option>
+                    <option value="arcane_jinx">Arcane Jinx</option>
                 </select>
 
 
@@ -136,18 +137,18 @@ function MlUi({ images, onBack }) {
                     className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
                     onClick={async () => {
                         console.log('Submitting form data:', selectedImage);
-                        const url = 'upload/' + sessionStorage.getItem('username');
-                        console.log(url);
                         
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+                        console.log(selectedStyle)
 
                         let formData = new FormData();
                         if (selectedImage) {
                             // Convert data URL to blob
                             const response = await fetch(selectedImage);
                             const blob = await response.blob();
-                            formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
+                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
+                            formData.append('style', selectedStyle); // Attach selected style to payload
                         }
 
                         try {
@@ -157,11 +158,11 @@ function MlUi({ images, onBack }) {
                                     'Content-Type': 'multipart/form-data'
                                 }
                             });
-                            console.log('Uploaded file successfully:', response.data);
+                            console.log('Success response', response.data);
                             setStylizedImage(URL.createObjectURL(response.data));
 
                         } catch (error) {
-                            console.error('Error uploading file:', error);
+                            console.error('Error Message:', await error.response.data.text())
                         }
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
