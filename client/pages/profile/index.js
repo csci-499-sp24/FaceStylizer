@@ -63,13 +63,13 @@ const toggleUpdateUsernameModal = () => {
           <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0"></div>
           <div className="place-content-center"></div>
           <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-            <button className="text-white py-2 px-4 uppercase rounded bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+            <div className="text-white py-2 px-4 uppercase rounded bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
               <ChangePassword/>
-            </button>
-            <button
+            </div>
+            <div
             className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
             <UpdateUsername />
-                        </button>
+                        </div>
           </div>
         </div>
         <div className="mt-40 text-center border-b pb-12">

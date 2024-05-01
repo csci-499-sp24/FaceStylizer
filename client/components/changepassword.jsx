@@ -19,23 +19,10 @@ function ChangePassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const currentUsername = sessionStorage.getItem('username');
-        let currentUserId; 
-        
-        const userResponse = await UsersApi.get('/readUser', { username: currentUsername });
-        const userObject = userResponse.data.message;
-        
-        console.log('User object:', userObject); 
-
-        if (!userObject) {
-            throw new Error('User not found'); 
-        }
-
-        currentUserId = userObject._id;
-        sessionStorage.setItem('_id', currentUserId); 
+        const currentUserId = sessionStorage.getItem('uid');
 
         const response = await UsersApi.put(`/updateUser/${currentUserId}`, {
-            password: formData.password,
+            password: formData.password
         });
 
         console.log('Password update successful:', response.data);
