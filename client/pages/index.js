@@ -8,7 +8,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 function Index() {
   return (
     <GoogleOAuthProvider clientId="593381902699-jdfocdq7nnpnsbjehq5sedfs6cf8k7b8.apps.googleusercontent.com">
-         <RHeader/>
+        <RHeader/>
         <CenteredImage/>
         <FileUpload/>
     </GoogleOAuthProvider>
