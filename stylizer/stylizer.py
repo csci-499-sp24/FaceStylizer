@@ -28,14 +28,15 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
-def generateCustomStyle():
-    images = ['clown3.jpg']
-    src_image = 'static/uploads/image.jpg'
+def generateCustomStyle(input_filename, input_dir, output_dir):
+    res = {"results" : ""}
+    images = ['drstrange.jpg']
+    # src_image = 'static/uploads/image.jpg'
     targets = []
     latents = []
     
     # 1) Process Source Image: Crop and Align Face
-    aligned_face, test_latent_space = setup_source_image(src_image)
+    aligned_face, test_latent_space = setup_source_image(input_dir)
 
     # 1) Load Pretrained StyleGAN 
     LATENT_DIM = 512
@@ -133,8 +134,12 @@ def generateCustomStyle():
         my_sample = test_generator(test_latent_space, input_is_latent=True)
     
     # 5) Save results
+    results = f"{output_dir}/{input_filename}_custom_results.jpg"
     pretrained_style_reference, input_base_face, output_tensor = concat_output(images[0], aligned_face, my_sample, transform, DEVICE)
-    save_image(output_tensor, "output.jpeg", (1028, 3080, 3), 3)
+    save_image(output_tensor, results, (1028, 3080, 3), 3)
+    res["results"] = results
+
+    return res
 def generatePretrainedStyle(input_filename, input_dir, output_dir, pretrained_model_name):
     res = {
             "model_reference" : "",
