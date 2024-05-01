@@ -3,6 +3,7 @@ import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
 import { useDropzone } from "react-dropzone";
 import ConfirmationModal from './ResponsePop';
+import CustomImageUpload from './custom';
 
 
 function FileUpload() {
@@ -18,6 +19,10 @@ function FileUpload() {
     const scrollRef = useRef(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isCustomSelected, setIsCustomSelected] = useState(false);
+    const [Custom, setCustom] = useState(null);
+    const fileInputRef = useRef(null);
+
 
     
     
@@ -38,19 +43,18 @@ function FileUpload() {
     //     setCurrentImageIndex(index);
     // };
 
-    // const handleFileInputChange = (event) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(file);
-    //         reader.onloadend = () => {
-    //             const newImages = [reader.result, ...displayedImages];
-    //             setSelectedImage(reader.result);
-    //             setCurrentImageIndex(0);
-    //             setDisplayedImages(newImages);
-    //         };
-    //     }
-    // };
+// Define a function to handle file input change
+const handleFileSelect = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCustom(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 
     // const handleImageRemove = () => {
     //     setSelectedImage(null);
@@ -68,8 +72,19 @@ function FileUpload() {
     //   setSelectedModel(event.target.value);
     // };
     const handleStyleChange = (event) => {
-        setSelectedStyle(event.target.value); 
+      const selectedValue = event.target.value;
+      setSelectedStyle(selectedValue);
+      if (selectedValue === 'custom') {
+        setIsCustomSelected(true);
+        setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }, 100);
+    }
+     else {
+        setIsCustomSelected(false);
+      }
     };
+    
 
     const handleSwitchImage = () => {
       open();
@@ -85,22 +100,31 @@ function FileUpload() {
       onDrop,
       accept: "image/*",
       noClick: !!selectedImage,
+
     });
+    
 
     const handleImageRemove = (index) => {
         // const updatedImages = [...displayedImages];
         // updatedImages.splice(index, 1);
         // setDisplayedImages(updatedImages);
+        // setSelectedImage(null);
         setSelectedImage(null);
-        setSelectedStyle(null);
+
+        // setSelectedStyle(null);
+        setCustom(null);
     };
 
+    // const handleCustomOptionSelect = (event) => {
+    //   const value = event.target.value;
+    //   setIsCustomSelected(value === 'custom'); 
+    // };
+    
     return (
       <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
       <div
         {...getRootProps({ className: "dropzone" })}
-        className="w-full max-w-4xl"
-      >
+        className="w-full max-w-4xl mr-4"      >
         <input {...getInputProps()} />
         <div 
           className={` rounded-lg p-4 ${
@@ -150,6 +174,7 @@ function FileUpload() {
             </div>
           )}
         </div>
+        <div className="w-full max-w-4xl mt-4">
         <div className="w-full flex justify-center items-center">
 
         <select
@@ -157,12 +182,23 @@ function FileUpload() {
                     className="text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 w-full"
                     onChange={handleStyleChange}
                 >
+                  
                     <option>Select FaceStylizer</option>
                     <option value="disney">Disney</option>
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
+                    <option value="custom">Custom</option>
                 </select>
+                </div>
+                {isCustomSelected && (
+      <CustomImageUpload
+        handleFileSelect={handleFileSelect}
+        handleImageRemove={handleImageRemove}
+        handleSwitchImage={handleSwitchImage}
+        Custom={Custom}
+      />
+    )}
                 </div>
            </div>
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
@@ -180,6 +216,7 @@ function FileUpload() {
                     Clear
                 </button>
       
+
 
 
                 {/* {selectedStyle && (
@@ -238,6 +275,8 @@ function FileUpload() {
                 >
                     Submit
                 </button>
+
+                
                 {modalOpen && (
         <ConfirmationModal
           isOpen={modalOpen}
@@ -246,6 +285,8 @@ function FileUpload() {
         />
       )}
             </div>
+
+
             {isLoading && ( 
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
           <div className="bg-gray-200 h-96 w-full flex justify-center items-center">
