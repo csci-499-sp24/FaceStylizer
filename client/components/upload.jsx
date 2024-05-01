@@ -25,10 +25,12 @@ function FileUpload() {
     const handleConfirm = () => {
       console.log("added!");
       setModalOpen(false);
+      window.location.reload(); 
     };
   
     const handleClose = () => {
       setModalOpen(false);
+      window.location.reload(); 
     };
 
     // const handleImageSelect = (image, index) => {
@@ -224,16 +226,25 @@ function FileUpload() {
 
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
+                            setModalOpen(true);
+
+
                                                   }
 
-                                                  setModalOpen(true);
+
 
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
                 >
                     Submit
                 </button>
-
+                {modalOpen && (
+        <ConfirmationModal
+          isOpen={modalOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+        />
+      )}
             </div>
             {isLoading && ( 
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
@@ -303,7 +314,6 @@ function FileUpload() {
                     Save Image
                 </button>
                 </div>)}
-                     <ConfirmationModal isOpen={modalOpen} onClose={handleClose} onConfirm={handleConfirm} />
 
         </div>
     );
