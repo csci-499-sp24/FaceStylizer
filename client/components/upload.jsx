@@ -146,6 +146,7 @@ function FileUpload() {
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
+                    <option value="custom">Custom Style</option>
                 </select>
                 </div>
            </div>
@@ -200,13 +201,25 @@ function FileUpload() {
 
                         try {
                             console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            const response = await StylizerApi.post("upload", formData, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            });
-                            console.log('Success response', response.data);
-                            setStylizedImage(URL.createObjectURL(response.data));
+                            if (selectedStyle != "custom") {
+                                const response = await StylizerApi.post("upload", formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                });
+                                console.log('Success response', response.data);
+                                setStylizedImage(URL.createObjectURL(response.data));
+                            }
+                            // Generate Custom Style
+                            else {
+                                const response = await StylizerApi.post("generateCustomStyle", formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                });
+                                console.log('Success response', response.data);
+                                setStylizedImage(URL.createObjectURL(response.data));
+                            }
 
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
