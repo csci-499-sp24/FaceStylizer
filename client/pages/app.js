@@ -9,7 +9,7 @@ function App() {
     return (
         <div>
             <RHeader/>
-            <CenteredImage/>
+            {/* <CenteredImage/> */}
             <FileUpload/>
         </div>
         
