@@ -7,7 +7,7 @@ const scrollToBottom = () => {
   });
 };
 
-const CenteredImage = () => {
+const Hero = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div
@@ -65,4 +65,4 @@ const CenteredImage = () => {
   );
 };
 
-export default CenteredImage;
+export default Hero;
