@@ -1,0 +1,14 @@
+pillow
+cmake
+wandb
+gdown
+matplotlib
+torch
+scipy
+tqdm
+torchvision
+opencv-python-headless
+Flask==3.0.0
+Flask-Cors
+gunicorn==20.1.0
+Werkzeug==3.0.1

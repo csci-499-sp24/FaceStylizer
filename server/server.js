@@ -2,6 +2,8 @@
 const express = require("express");
 const cors = require('cors')
 const app = express();
+require('dotenv').config();
+
 
 //--BodyParser--
 const bodyParser = require('body-parser');
@@ -21,10 +23,24 @@ const mongoUrl      = process.env.MONGO_URL || "mongodb://root:password@localhos
 const mongooseUrl   = process.env.MONGOOSE_URL || `${mongoUrl}/${db_name}?authSource=admin`;
 
 //--Express router: import routes we defined
-const apiRouter = require('./routes/user');
+const apiRouter = require('./routes');
+
+// Dotenv configuration
+require('dotenv').config()
+
+//--CORS Access Control Headers Permissions
+function setCorsHeaders(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+    next();
+}
 
 //--Configure routes and error handling
 const configureApp = async () => {
+    // Configure CORS middleware
+    app.use(setCorsHeaders);
+
     // Mount apiRouter
     app.use(apiRouter);
 
