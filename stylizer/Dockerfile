@@ -20,9 +20,6 @@ ENV PORT 8090
 # Install Dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Google Cloud TPU dependencies
-RUN pip install torch~=2.2.0 torch_xla[tpu]~=2.2.0 torchvision -f https://storage.googleapis.com/libtpu-releases/index.html
-
 # Build DLIB
 RUN cd dlib && mkdir build && cd build && cmake ../ && cmake --build . && cd .. && python3 setup.py install
 
