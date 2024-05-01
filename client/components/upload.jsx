@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
 import { useDropzone } from "react-dropzone";
+import ConfirmationModal from './ResponsePop';
+
 
 function FileUpload() {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -14,8 +16,22 @@ function FileUpload() {
     const [imageFile, setImageFile] = useState(null);
     const [selectedModel, setSelectedModel] = useState("");
     const scrollRef = useRef(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     
     
+    
+    const handleConfirm = () => {
+      console.log("added!");
+      setModalOpen(false);
+      window.location.reload(); 
+    };
+  
+    const handleClose = () => {
+      setModalOpen(false);
+      window.location.reload(); 
+    };
 
     // const handleImageSelect = (image, index) => {
     //     setSelectedImage(image);
@@ -210,13 +226,25 @@ function FileUpload() {
 
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
-                        }
+                            setModalOpen(true);
+
+
+                                                  }
+
+
+
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
                 >
                     Submit
                 </button>
-
+                {modalOpen && (
+        <ConfirmationModal
+          isOpen={modalOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+        />
+      )}
             </div>
             {isLoading && ( 
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
@@ -286,6 +314,7 @@ function FileUpload() {
                     Save Image
                 </button>
                 </div>)}
+
         </div>
     );
 }
