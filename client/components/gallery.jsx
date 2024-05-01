@@ -64,8 +64,8 @@ const Gallery = () => {
       <p className="text-lg text-gray-800 text-center">View your stylized images all in one place</p>
        <br></br>
       <div className="flex justify-between text-center mb-2">
-        <h2 className="w-1/3 text-lg font-semibold">Filter</h2>
         <h2 className="w-1/3 text-lg font-semibold">Uploaded Image</h2>
+        <h2 className="w-1/3 text-lg font-semibold">Filter</h2>
         <h2 className="w-1/3 text-lg font-semibold">Output Image</h2>
       </div>
       {searchResults.map((result) => (
