@@ -72,27 +72,27 @@ const Gallery = () => {
         <div key={result.id} className="mb-6">
           <div className="relative bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="pb-4"></div>
-            <div className="absolute top-0 left-0 bg-white bg-opacity-90 px-3 py-2 rounded-br-lg text-sm">
-              <p>{result.time}</p>
+            <div className="absolute font-bold top-0 left-0 bg-white bg-opacity-90 px-3 py-2 rounded-br-lg text-md">
+              <p>⏰ {result.time}</p>
             </div>
             <div className="flex space-x-4 p-4 justify-center">
               <img
                 className="w-1/3 object-cover rounded-lg"
                 src={result.image0}
                 alt="Stylized Image"
-                style={{ width: '450px' }}
+                style={{ width: '380px', height: "400px" }}
               />
               <img
                 className="w-1/3 object-cover rounded-lg"
                 src={result.image1}
                 alt="Reference Image"
-                style={{ width: '450px' }}
+                style={{width: '380px', height: "400px" }}
               />
               <img
                 className="w-1/3 object-cover rounded-lg"
                 src={result.image2}
                 alt="Something else?"
-                style={{ width: '450px' }} 
+                style={{ width: '380px', height: "400px"}} 
               />
               <div className="pb-4"></div>
             </div>
