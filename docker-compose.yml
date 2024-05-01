@@ -20,12 +20,12 @@ services:
     environment:
       MONGO_URL: "mongodb://root:password@mongo:27017"
 
-  frontend:
-    image: facestylizer/frontend
-    platform: linux/amd64
-    build: ./client
-    ports:
-      - 3000:3000
+#  frontend:
+#    image: facestylizer/frontend
+#    platform: linux/amd64
+#    build: ./client
+#    ports:
+#      - 3000:3000
 
   mongo-express:
     image: mongo-express:latest

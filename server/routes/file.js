@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const uploadImage = require("../utilities/uploadImage");
+const {imageRequest} = require('../models/imageRequest');
+const { uuid } = require('uuidv4');
 
 // File S3 Object Requests Format
 // req.file = {
@@ -21,18 +23,21 @@ const uploadImage = require("../utilities/uploadImage");
 // Upload and file processing logic located in utilities/uploadImage.js
 
 router.post("/upload/:id", uploadImage.single("image"), async (req, res, next) => {
-
     console.log(`User ${req.params.id} successfully uploaded image to S3 bucket, accessible with URL: ${req.file.location}`)
     console.log(req.file);
 
     res.status(200);
     res.json({
-        message: `User ${req.params.id} successfully uploaded image to S3 bucket, accessible with URL: ${req.file.location}`
+        message: `User ${req.params.id} successfully uploaded image to S3 bucket`,
+        url: `${req.file.location}`
+    });
+
+    const request = await imageRequest.create({
+        userId: req.params.id,
+        UID: uuid(),
+        uploadDate: new Date
     })
-
-    // MongoDB Changes to go here when implemented
-    }
-)
-
+    await request.save()
+});
 
 module.exports = router;

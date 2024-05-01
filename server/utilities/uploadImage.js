@@ -1,7 +1,7 @@
 const {S3Client} = require("@aws-sdk/client-s3");
 const {PutObjectCommand} = require("@aws-sdk/client-s3");
 const multer = require('multer');
-const multerS3 = require('multer-s3')
+const multerS3 = require('multer-s3');
 require('dotenv').config();
 
 const client = new S3Client({
@@ -19,7 +19,7 @@ const s3Storage = multerS3({
         cb(null, {fieldname: file.fieldname})
     },
     key: (req, file, cb) => {
-        const fileName = "user-uploads/" + req.params.id + "-" + Date.now() + "-" + file.originalname;
+        const fileName = "user-uploads/" + `${req.params.id}/` + Date.now() + "-" + file.originalname;
         cb(null, fileName);
     }
 });
