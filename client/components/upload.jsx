@@ -1,132 +1,293 @@
-import React, { useState, useRef } from 'react';
-import 'tailwindcss/tailwind.css';
-import MlUi from './MlUi';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import FilesApi from "@/Api/FilesApi";
+import StylizerApi from '@/Api/StylizerApi';
+import { useDropzone } from "react-dropzone";
 
 function FileUpload() {
-  const [file, setFile] = useState(null); // State for storing the selected file
-  const [showDropMessage, setShowDropMessage] = useState(true);
-  const [showUploadButton, setShowUploadButton] = useState(true);
-  const [showMlUi, setShowMlUi] = useState(false); // State to control the visibility of the MlUi component
-  const fileInputRef = useRef(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [selectedStyle, setSelectedStyle] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    // const [displayedImages, setDisplayedImages] = useState(images || []);
+    const [stylizedImage, setStylizedImage] = useState(null);
+    const firstImageRef = useRef(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [selectedModel, setSelectedModel] = useState("");
+    const scrollRef = useRef(null);
+    
+    
 
-  const handleFileInputChange = (event) => {
-    const selectedFile = event.target.files[0]; // Only consider the first selected file
-    setFile(selectedFile);
-    setShowDropMessage(false);
-  };
+    // const handleImageSelect = (image, index) => {
+    //     setSelectedImage(image);
+    //     setCurrentImageIndex(index);
+    // };
 
-  const handleUploadButtonClick = () => {
-    setShowUploadButton(false); // Hide the upload button
-    setShowMlUi(true); // Show the MlUi component
-  };
+    // const handleFileInputChange = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.readAsDataURL(file);
+    //         reader.onloadend = () => {
+    //             const newImages = [reader.result, ...displayedImages];
+    //             setSelectedImage(reader.result);
+    //             setCurrentImageIndex(0);
+    //             setDisplayedImages(newImages);
+    //         };
+    //     }
+    // };
 
-  const handleCancel = () => {
-    setFile(null); // Reset the selected file
-    setShowDropMessage(true);
-  };
+    // const handleImageRemove = () => {
+    //     setSelectedImage(null);
+    //     setSelectedStyle(null);
+    // };
 
-  const passImageToMlUi = () => {
-    if (file) {
-      return URL.createObjectURL(file); // Pass the URL of the selected file
-    }
-    return null;
-  };
+    const handleClearImage = () => {
+      setSelectedImage(null);
+      setImageFile(null);
+      setSelectedModel("");
+    };
+  
 
-  const handleBackFromMlUi = () => {
-    setShowMlUi(false); // Hide the MlUi component
-    setShowUploadButton(true); // Show the upload button again
-  };
+    // const handleModelChange = (event) => {
+    //   setSelectedModel(event.target.value);
+    // };
+    const handleStyleChange = (event) => {
+        setSelectedStyle(event.target.value); 
+    };
 
-  return (
-    <div className="mt-0 bg-white h-screen w-screen sm:px-8 md:px-16 sm:py-8">
-      <main className="container mx-auto max-w-screen-lg h-full">
-        {showUploadButton && (
-          <article
-            aria-label="File Upload Modal"
-            className="relative h-full flex flex-col bg-white shadow-xl rounded-md"
-          >
-            {showDropMessage && (
-              <div id="overlay" className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex flex-col items-center justify-center rounded-md mt-20">
-                <i>
-                  <svg className="fill-current w-12 h-12 mb-3 text-yellow-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
-                  </svg>
-                </i>
-                <p className="text-lg text-yellow-500">Drop a Picture to Upload</p>
-              </div>
+    const handleSwitchImage = () => {
+      open();
+    };
+
+    const onDrop = useCallback((acceptedFiles) => {
+      const file = acceptedFiles[0];
+      setSelectedImage(URL.createObjectURL(file));
+      setImageFile(file);
+    }, []);
+
+  const { getRootProps, getInputProps, open } = useDropzone({
+      onDrop,
+      accept: "image/*",
+      noClick: !!selectedImage,
+    });
+
+    const handleImageRemove = (index) => {
+        // const updatedImages = [...displayedImages];
+        // updatedImages.splice(index, 1);
+        // setDisplayedImages(updatedImages);
+        setSelectedImage(null);
+        setSelectedStyle(null);
+    };
+
+    return (
+      <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
+      <div
+        {...getRootProps({ className: "dropzone" })}
+        className="w-full max-w-4xl"
+      >
+        <input {...getInputProps()} />
+        <div 
+          className={` rounded-lg p-4 ${
+            selectedImage ? "" : "border-gray-300"
+          }`}
+        >
+          {!selectedImage ? (
+                 <div className="text-gray-500 text-center">
+                 <img
+                   src="https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png" 
+                   alt="Placeholder"
+                   className="mx-auto max-w-full max-h-96 rounded"
+                 />
+                                  <p>Drag and drop some files here, or click to select files</p>
+
+               </div>
+          ) : (
+            <div className="relative">
+              <img
+                src={selectedImage}
+                alt="Preview"
+                className="rounded mx-auto max-w-full max-h-96"
+              />
+
+
+              <button
+                onClick={handleSwitchImage}
+                className="absolute top-0 right-0 m-2 bg-white rounded-full p-1 shadow-lg"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+      </svg>
+
+              </button>
+
+              
+              <button
+        onClick={handleClearImage}
+      className="absolute top-0 right-10 m-2 bg-white rounded-full p-1 shadow-lg"
+>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+     <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+      </svg>
+
+        </button>
+
+            </div>
+          )}
+        </div>
+        <div className="w-full flex justify-center items-center">
+
+        <select
+                    id="restaurantImage"
+                    className="text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 w-full"
+                    onChange={handleStyleChange}
+                >
+                    <option>Select FaceStylizer</option>
+                    <option value="disney">Disney</option>
+                    <option value="jojo">JoJo</option>
+                    <option value="jojo_yasuho">JoJo Yasuho</option>
+                    <option value="arcane_jinx">Arcane Jinx</option>
+                </select>
+                </div>
+           </div>
+            <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
+                {/* <button
+                    className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    onClick={onBack}
+                >
+                    Back
+                </button> */}
+                <button
+                    className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    onClick={() => handleImageRemove(currentImageIndex)}
+                    disabled={!selectedImage}
+                >
+                    Clear
+                </button>
+      
+
+
+                {/* {selectedStyle && (
+                    <button
+                        className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                        onClick={() => console.log("Submitted")} 
+                    >
+                        Submit
+                    </button>
+                )} */}
+
+
+                <button
+                    className="inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    onClick={async () => {
+                      setIsLoading(true); 
+                      setTimeout(() => {
+                        window.scrollTo(0, document.body.scrollHeight);
+                      }, 100);
+                        console.log('Submitting form data:', selectedImage);
+                        
+                        console.log(process.env.NODE_ENV)
+                        console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+                        console.log(selectedStyle)
+                  
+                        let formData = new FormData();
+                        if (selectedImage) {
+                            // Convert data URL to blob
+                            const response = await fetch(selectedImage);
+                            const blob = await response.blob();
+                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
+                            formData.append('style', selectedStyle); // Attach selected style to payload
+                        }
+
+                        try {
+                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
+                            const response = await StylizerApi.post("upload", formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            console.log('Success response', response.data);
+                            setStylizedImage(URL.createObjectURL(response.data));
+
+                        } catch (error) {
+                            console.error('Error Message:', await error.response.data.text())
+                        }
+                    }}
+                    disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
+                >
+                    Submit
+                </button>
+
+            </div>
+            {isLoading && ( 
+            <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
+          <div className="bg-gray-200 h-96 w-full flex justify-center items-center">
+       {!stylizedImage && (
+          <svg className="animate-spin h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.001 8.001 0 0117.709 5.29h2.004A10.001 10.001 0 002.002 12H6v-.009z"></path>
+        </svg>
+        )}
+        {stylizedImage && (
+            <img
+                src={stylizedImage}
+                alt="Stylized Image"
+                className="max-h-96 max-w-full"
+            />
+        )}
+       </div>
+    </div>
             )}
 
-            <section className="h-full overflow-auto p-8 w-full h-full flex flex-col">
-              <header className="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center">
-                <p className="mb-3 font-semibold text-gray-900 flex flex-wrap justify-center">
-                  <span>Drag and Drop a File</span>
-                </p>
-                <input
-                  ref={fileInputRef}
-                  id="hidden-input"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileInputChange}
-                />
+
+{isLoading && (
+<div>
+
                 <button
-                  id="button"
-                  className="mt-2 rounded-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 focus:shadow-outline focus:outline-none"
-                  onClick={() => fileInputRef.current.click()}
+                    className="mt-2 inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.location.reload();
+                    }}
+                  >
+                      FaceStylize
+
+                    </button>
+
+                <button
+                    className="mt-2 inline-flex items-center shadow-md px-4 py-2 bg-yellow-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
+
+                    onClick={async () => {
+                        console.log('Submitting form data:', stylizedImage);
+                        const url = 'upload/' + sessionStorage.getItem('username');
+                        console.log(url);
+
+                        console.log(process.env.NODE_ENV);       
+                        let formData = new FormData();
+                        if (stylizedImage) {
+                            // Convert data URL to blob
+                            const response = await fetch(stylizedImage);
+                            const blob = await response.blob();
+                            formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
+                        }
+
+                        try {
+                            const response = await FilesApi.post(url, formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            console.log('Uploaded file successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error uploading file:', error);
+                        }
+                    }}
                 >
-                  Upload a Picture
+                    Save Image
                 </button>
-              </header>
-
-              <h1 className="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
-                To Upload
-              </h1>
-
-              {file && (
-                <div className="flex justify-center items-center">
-                  <div className="mb-20 block p-1 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-1/8 h-24">
-                    <article tabIndex="0" className="group w-full h-40 rounded-md focus:outline-none focus:shadow-outline relative bg-gray-100 cursor-pointer">
-                      <img alt="upload preview" className="w-full h-full sticky object-cover rounded-md bg-fixed" src={URL.createObjectURL(file)} />
-                      <section className="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3">
-                        <h1 className="flex-1"></h1>
-                        <div className="flex">
-                          <button className="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md text-red-500" onClick={handleCancel}>
-                            <svg className="pointer-events-none fill-current w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                              <path className="pointer-events-none" d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </section>
-                    </article>
-                  </div>
-                </div>
-              )}
-
-            </section>
-
-            <footer className="flex justify-end px-8 pb-8 pt-4">
-              <button
-                onClick={handleUploadButtonClick}
-                className="rounded-sm px-3 py-1 bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none animate-bounce"
-              >
-                FaceStylize
-              </button>
-            </footer>
-          </article>
-        )}
-
-        
-      {showMlUi && (
-          <MlUi
-            images={file ? [passImageToMlUi()] : []}
-            onBack={handleBackFromMlUi}
-          />
-        )}
-
-
-      </main>
-    </div>
-  );
+                </div>)}
+        </div>
+    );
 }
 
 export default FileUpload;
