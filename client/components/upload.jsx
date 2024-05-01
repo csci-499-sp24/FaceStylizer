@@ -30,9 +30,7 @@ function FileUpload() {
     const handleClose = () => {
       setModalOpen(false);
     };
-    // <button onClick={() => setModalOpen(true)}>Delete Account</button>
-    //     <ConfirmationModal isOpen={modalOpen} onClose={handleClose} onConfirm={handleConfirm} />
-    //   </div>
+
     // const handleImageSelect = (image, index) => {
     //     setSelectedImage(image);
     //     setCurrentImageIndex(index);
@@ -226,8 +224,10 @@ function FileUpload() {
 
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
-                            setModalOpen(true);
                                                   }
+
+                                                  setModalOpen(true);
+
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
                 >
@@ -303,6 +303,8 @@ function FileUpload() {
                     Save Image
                 </button>
                 </div>)}
+                     <ConfirmationModal isOpen={modalOpen} onClose={handleClose} onConfirm={handleConfirm} />
+
         </div>
     );
 }
