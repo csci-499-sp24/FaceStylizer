@@ -28,9 +28,9 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
-def generateCustomStyle(input_filename, input_dir, output_dir):
+def generateCustomStyle(input_filename, input_dir, custom_filename, custom_dir, output_dir):
     res = {"results" : ""}
-    images = ['drstrange.jpg']
+    images = [custom_filename]
     # src_image = 'static/uploads/image.jpg'
     targets = []
     latents = []
@@ -44,22 +44,23 @@ def generateCustomStyle(input_filename, input_dir, output_dir):
     orig_generator, orig_mean_latent, test_generator, transform = load_pretrained_stylegan(LATENT_DIM, DEVICE)
 
     for imgName in images:
-        style_path = os.path.join('JoJoGAN/style_images', imgName)
+        style_path = custom_dir
         assert os.path.exists(style_path), f"{style_path} does not exist!"
 
         imgName = strip_path_extension(imgName)
         
         
         # 1) Process Style Image: Crop and Align Face
-        style_aligned_path = os.path.join('JoJoGAN/style_images_aligned', f'{imgName}.png')
-        if not os.path.exists(style_aligned_path):
-            style_aligned = align_face(style_path)
-            style_aligned.save(style_aligned_path)
-        else:
-            style_aligned = Image.open(style_aligned_path).convert('RGB')
+        style_aligned_path = os.path.join(output_dir, "style_images_aligned", f"{imgName}.png")
+        style_aligned = align_face(style_path)
+        style_aligned.save(style_aligned_path)
+        # style_aligned_path = os.path.join('JoJoGAN/style_images_aligned', f'{imgName}.png')
+        # if not os.path.exists(style_aligned_path):
+        # else:
+        #     style_aligned = Image.open(style_aligned_path).convert('RGB')
 
         # 2) GAN Invert: e4e Projection
-        style_code_path = os.path.join('JoJoGAN/inversion_codes', f'{imgName}.pt')
+        style_code_path = os.path.join(output_dir, 'inversion_codes', f'{imgName}.pt')
         if not os.path.exists(style_code_path):
             latent = e4e_projection(style_aligned, style_code_path, DEVICE)
         else:
@@ -71,7 +72,6 @@ def generateCustomStyle(input_filename, input_dir, output_dir):
     targets = torch.stack(targets, 0)
     latents = torch.stack(latents, 0)
     target_im = utils.make_grid(targets, normalize=True, nrow=1)
-    save_image(target_im, "test.jpeg")
 
     # 3) Finetune StyleGAN
     # Controls the strength of the style
@@ -135,7 +135,7 @@ def generateCustomStyle(input_filename, input_dir, output_dir):
     
     # 5) Save results
     results = f"{output_dir}/{input_filename}_custom_results.jpg"
-    pretrained_style_reference, input_base_face, output_tensor = concat_output(images[0], aligned_face, my_sample, transform, DEVICE)
+    pretrained_style_reference, input_base_face, output_tensor = concat_output(images[0], aligned_face, my_sample, custom_dir, transform, DEVICE)
     save_image(output_tensor, results, (1028, 3080, 3), 3)
     res["results"] = results
 
@@ -177,7 +177,7 @@ def generatePretrainedStyle(input_filename, input_dir, output_dir, pretrained_mo
                                                  test_latent_space)
 
     # 5) Concatenate Output (Base Style - Base Input Face - Stylized Face)
-    pretrained_style_reference, input_base_face, output_tensor = concat_output(pretrained_model_name, aligned_face, output_style, transform, DEVICE)
+    pretrained_style_reference, input_base_face, output_tensor = concat_output(pretrained_model_name, aligned_face, output_style, "", transform, DEVICE)
 
     # Save image of pretrained reference style used
     model_reference = f"{output_dir}/{input_filename}_1_pretrained_reference.jpg"
@@ -269,17 +269,14 @@ def train_pretrained_generator_on(seed, n_sample, latent_dim, device, original_g
 
     return res
 
-def concat_output(pretrained, aligned_face, stylized_face, transform, device):
+def concat_output(pretrained, aligned_face, stylized_face, style_path, transform, device):
     # Get reference images from pretrained
-    style_path = ""
     if pretrained == 'arcane_multi':
         style_path = f'JoJoGAN/style_images_aligned/arcane_jinx.png'
     elif pretrained == 'sketch_multi':
         style_path = f'JoJoGAN/style_images_aligned/sketch.png'
     elif os.path.exists(f'JoJoGAN/style_images_aligned/{pretrained}.png'):
         style_path = f'JoJoGAN/style_images_aligned/{pretrained}.png'
-    else:
-        style_path = f'JoJoGAN/style_images/{pretrained}'
 
     # Build output
     pretrained_style_image = transform(Image.open(style_path)).unsqueeze(0).to(device)
