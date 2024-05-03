@@ -20,7 +20,7 @@ function FileUpload() {
     const [modalOpen, setModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isCustomSelected, setIsCustomSelected] = useState(false);
-    const [Custom, setCustom] = useState(null);
+    const [custom, setCustom] = useState(null);
     const fileInputRef = useRef(null);
 
     
@@ -197,7 +197,7 @@ function FileUpload() {
         handleFileSelect={handleFileSelect}
         handleImageRemove={handleImageRemove}
         handleSwitchImage={handleSwitchImage}
-        Custom={Custom}
+        Custom={custom}
       />
     )}
                 </div>
@@ -242,18 +242,20 @@ function FileUpload() {
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                         console.log(selectedStyle)
                   
+
                         let formData = new FormData();
-                        if (selectedImage) {
+
+                        // Generate Pretrain Style
+                        if (!isCustomSelected) {
                             // Convert data URL to blob
                             const response = await fetch(selectedImage);
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Attach image to payload 
                             formData.append('style', selectedStyle); // Attach selected style to payload
-                        }
-
-                        try {
-                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            if (selectedStyle != "custom") {
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                                 const response = await StylizerApi.post("upload", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -261,9 +263,27 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
-                            // Generate Custom Style
-                            else {
+                        } 
+                        // Generate Custom Style
+                        else {
+                            // Convert data URL to blob
+                            const response = await fetch(selectedImage);
+                            const blob = await response.blob();
+
+                            const customResponse = await fetch(custom);
+                            const customBlob = await customResponse.blob();
+
+                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
+                            formData.append('custom', customBlob, "custom.jpg"); // Attach custom image to payload
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_IP}`)
                                 const response = await StylizerApi.post("generateCustomStyle", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -271,14 +291,13 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
+                        }
 
-                        } catch (error) {
-                            console.error('Error Message:', await error.response.data.text())
-                            setModalOpen(true);
-
-
-                                                  }
 
 
 
