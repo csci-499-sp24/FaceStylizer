@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
 import { useDropzone } from "react-dropzone";
+import ConfirmationModal from './ResponsePop';
+
 
 function FileUpload() {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -14,8 +16,22 @@ function FileUpload() {
     const [imageFile, setImageFile] = useState(null);
     const [selectedModel, setSelectedModel] = useState("");
     const scrollRef = useRef(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     
     
+    
+    const handleConfirm = () => {
+      console.log("added!");
+      setModalOpen(false);
+      window.location.reload(); 
+    };
+  
+    const handleClose = () => {
+      setModalOpen(false);
+      window.location.reload(); 
+    };
 
     // const handleImageSelect = (image, index) => {
     //     setSelectedImage(image);
@@ -146,6 +162,7 @@ function FileUpload() {
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
+                    <option value="custom">Custom Style</option>
                 </select>
                 </div>
            </div>
@@ -184,6 +201,7 @@ function FileUpload() {
                         window.scrollTo(0, document.body.scrollHeight);
                       }, 100);
                         console.log('Submitting form data:', selectedImage);
+                        
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                         console.log(selectedStyle)
@@ -199,23 +217,47 @@ function FileUpload() {
 
                         try {
                             console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            const response = await StylizerApi.post(`upload/${sessionStorage.getItem("uid")}`, formData, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            });
-                            console.log('Success response', response.data);
-                            setStylizedImage(URL.createObjectURL(response.data));
+                            if (selectedStyle != "custom") {
+                                const response = await StylizerApi.post("upload", formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                });
+                                console.log('Success response', response.data);
+                                setStylizedImage(URL.createObjectURL(response.data));
+                            }
+                            // Generate Custom Style
+                            else {
+                                const response = await StylizerApi.post("generateCustomStyle", formData, {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data'
+                                    }
+                                });
+                                console.log('Success response', response.data);
+                                setStylizedImage(URL.createObjectURL(response.data));
+                            }
 
                         } catch (error) {
                             console.error('Error Message:', await error.response.data.text())
-                        }
+                            setModalOpen(true);
+
+
+                                                  }
+
+
+
                     }}
                     disabled={!selectedImage || !selectedStyle} // Button is disabled if no image is selected or no style is chosen
                 >
                     Submit
                 </button>
-
+                {modalOpen && (
+        <ConfirmationModal
+          isOpen={modalOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+        />
+      )}
             </div>
             {isLoading && ( 
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center pt-60">
@@ -263,7 +305,6 @@ function FileUpload() {
 
                         console.log(process.env.NODE_ENV);       
                         let formData = new FormData();
-                        formData.append("directory","user-uploads")
                         if (stylizedImage) {
                             // Convert data URL to blob
                             const response = await fetch(stylizedImage);
@@ -286,6 +327,7 @@ function FileUpload() {
                     Save Image
                 </button>
                 </div>)}
+
         </div>
     );
 }

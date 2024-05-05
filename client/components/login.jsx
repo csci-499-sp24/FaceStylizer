@@ -28,6 +28,7 @@ function Login() {
       });
       console.log('Login successful:', response.data);
       sessionStorage.setItem('username', formData.username);
+      sessionStorage.setItem('uid', response.data.uid);
       console.log('Redirecting to /home...');
       router.push('/account'); // Redirect to /home
     } catch (error) {

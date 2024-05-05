@@ -28,6 +28,118 @@ from e4e_projection import projection as e4e_projection
 from util import *
 from util import ensure_checkpoint_exists
 
+def generateCustomStyle(input_filename, input_dir, output_dir):
+    res = {"results" : ""}
+    images = ['drstrange.jpg']
+    # src_image = 'static/uploads/image.jpg'
+    targets = []
+    latents = []
+    
+    # 1) Process Source Image: Crop and Align Face
+    aligned_face, test_latent_space = setup_source_image(input_dir)
+
+    # 1) Load Pretrained StyleGAN 
+    LATENT_DIM = 512
+    DEVICE = 'cpu'
+    orig_generator, orig_mean_latent, test_generator, transform = load_pretrained_stylegan(LATENT_DIM, DEVICE)
+
+    for imgName in images:
+        style_path = os.path.join('JoJoGAN/style_images', imgName)
+        assert os.path.exists(style_path), f"{style_path} does not exist!"
+
+        imgName = strip_path_extension(imgName)
+        
+        
+        # 1) Process Style Image: Crop and Align Face
+        style_aligned_path = os.path.join('JoJoGAN/style_images_aligned', f'{imgName}.png')
+        if not os.path.exists(style_aligned_path):
+            style_aligned = align_face(style_path)
+            style_aligned.save(style_aligned_path)
+        else:
+            style_aligned = Image.open(style_aligned_path).convert('RGB')
+
+        # 2) GAN Invert: e4e Projection
+        style_code_path = os.path.join('JoJoGAN/inversion_codes', f'{imgName}.pt')
+        if not os.path.exists(style_code_path):
+            latent = e4e_projection(style_aligned, style_code_path, DEVICE)
+        else:
+            latent = torch.load(style_code_path)['latent']
+
+        targets.append(transform(style_aligned).to(DEVICE))
+        latents.append(latent.to(DEVICE)) 
+
+    targets = torch.stack(targets, 0)
+    latents = torch.stack(latents, 0)
+    target_im = utils.make_grid(targets, normalize=True, nrow=1)
+    save_image(target_im, "test.jpeg")
+
+    # 3) Finetune StyleGAN
+    # Controls the strength of the style
+    alpha = 1
+    alpha = 1 - alpha
+
+    # Tries to preserve the color of the original input face
+    preserve_color = True
+
+    # Num. of finetuning steps
+    num_iter = 2
+
+    # Using wandb
+    use_wandb = False
+    log_interval = 50
+
+    # Load Discriminator for perceptual loss
+    discriminator = Discriminator(1024, 2).eval().to(DEVICE)
+    ckpt = torch.load('JoJoGAN/models/stylegan2-ffhq-config-f.pt', map_location=lambda storage, loc: storage)
+    discriminator.load_state_dict(ckpt["d"], strict=False)
+
+    # Reset generator
+    del test_generator
+    test_generator = deepcopy(orig_generator)
+    
+    # Adam Optimizer
+    g_optim = optim.Adam(test_generator.parameters(), lr=2e-3, betas=(0, 0.99))
+
+    # Figuring out which layers to swap based on preserve color property
+    id_swap = []
+    if preserve_color:
+        id_swap = [9,11,15,16,17]
+    else:
+        id_swap = list(range(7, test_generator.n_latent))
+    
+    # Finetune StyleGAN on new style
+    for idx in tqdm(range(num_iter)):
+        mean_w = test_generator.get_latent(torch.randn([latents.size(0), LATENT_DIM]).to(DEVICE)).unsqueeze(1).repeat(1, test_generator.n_latent, 1)
+        in_latent = latents.clone()
+        in_latent[:, id_swap] = alpha*latents[:, id_swap] + (1-alpha)*mean_w[:, id_swap]
+
+        img = test_generator(in_latent, input_is_latent=True)
+        
+        with torch.no_grad():
+            real_feat = discriminator(targets)
+        fake_feat = discriminator(img)
+        
+        loss = sum([F.l1_loss(a, b) for a, b in zip(fake_feat, real_feat)])/len(fake_feat)
+
+        g_optim.zero_grad()
+        loss.backward()
+        g_optim.step()
+
+    # 4) Generate Results
+    n_sample = 5
+    seed = 3000
+    torch.manual_seed(seed)
+    with torch.no_grad():
+        test_generator.eval()
+        my_sample = test_generator(test_latent_space, input_is_latent=True)
+    
+    # 5) Save results
+    results = f"{output_dir}/{input_filename}_custom_results.jpg"
+    pretrained_style_reference, input_base_face, output_tensor = concat_output(images[0], aligned_face, my_sample, transform, DEVICE)
+    save_image(output_tensor, results, (1028, 3080, 3), 3)
+    res["results"] = results
+
+    return res
 def generatePretrainedStyle(input_filename, input_dir, output_dir, pretrained_model_name):
     res = {
             "model_reference" : "",
@@ -164,9 +276,11 @@ def concat_output(pretrained, aligned_face, stylized_face, transform, device):
         style_path = f'JoJoGAN/style_images_aligned/arcane_jinx.png'
     elif pretrained == 'sketch_multi':
         style_path = f'JoJoGAN/style_images_aligned/sketch.png'
-    else:
+    elif os.path.exists(f'JoJoGAN/style_images_aligned/{pretrained}.png'):
         style_path = f'JoJoGAN/style_images_aligned/{pretrained}.png'
-    
+    else:
+        style_path = f'JoJoGAN/style_images/{pretrained}'
+
     # Build output
     pretrained_style_image = transform(Image.open(style_path)).unsqueeze(0).to(device)
     base_face = transform(aligned_face).unsqueeze(0).to(device) 
@@ -198,4 +312,5 @@ def save_image(image, filename, shape=(1024, 1024, 3), rows=1, size=None, mode='
     img.save(filename)
 
 if __name__ == "__main__":
-    generatePretrainedStyle("JoJoGAN/test_input/chris_hemsworth.jpeg")
+    # generatePretrainedStyle("JoJoGAN/test_input/chris_hemsworth.jpeg")
+    generateCustomStyle()

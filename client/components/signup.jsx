@@ -26,6 +26,7 @@ function SignUp() {
       });
       console.log('Account created successfully:', response.data);
       sessionStorage.setItem('username', formData.username);
+      sessionStorage.setItem('uid', response.data.message._id);
       console.log('Redirecting to /home...');
       router.push('/account'); // Redirect to /home
     } catch (error) {
