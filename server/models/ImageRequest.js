@@ -5,13 +5,14 @@ const { Schema, model } = mongoose;
 const imageRequestSchema = new Schema({
     userId: String,
     UID: String,
-    uploadDate: Date,
+    fileURL: String,
+    uploadDate: Date
 });
 
 // Compile Schema
-const imageRequest = model('imageRequest', imageRequestSchema);
+const ImageRequest = model('ImageRequest', imageRequestSchema);
 
 // Export
 module.exports = {
-    imageRequest
+    ImageRequest
 }

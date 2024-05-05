@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const uploadImage = require("../utilities/uploadImage");
-const {imageRequest} = require('../models/imageRequest');
-const { uuid } = require('uuidv4');
+const {ImageRequest} = require("../models/ImageRequest");
+const short = require('short-uuid');
 
 // File S3 Object Requests Format
 // req.file = {
@@ -31,13 +31,6 @@ router.post("/upload/:id", uploadImage.single("image"), async (req, res, next) =
         message: `User ${req.params.id} successfully uploaded image to S3 bucket`,
         url: `${req.file.location}`
     });
-
-    const request = await imageRequest.create({
-        userId: req.params.id,
-        UID: uuid(),
-        uploadDate: new Date
-    })
-    await request.save()
 });
 
 module.exports = router;
