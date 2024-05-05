@@ -184,7 +184,6 @@ function FileUpload() {
                         window.scrollTo(0, document.body.scrollHeight);
                       }, 100);
                         console.log('Submitting form data:', selectedImage);
-                        
                         console.log(process.env.NODE_ENV)
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                         console.log(selectedStyle)
@@ -200,7 +199,7 @@ function FileUpload() {
 
                         try {
                             console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            const response = await StylizerApi.post("upload", formData, {
+                            const response = await StylizerApi.post(`upload/${sessionStorage.getItem("uid")}`, formData, {
                                 headers: {
                                     'Content-Type': 'multipart/form-data'
                                 }
@@ -264,6 +263,7 @@ function FileUpload() {
 
                         console.log(process.env.NODE_ENV);       
                         let formData = new FormData();
+                        formData.append("directory","user-uploads")
                         if (stylizedImage) {
                             // Convert data URL to blob
                             const response = await fetch(stylizedImage);

@@ -3,7 +3,6 @@ const {PutObjectCommand} = require("@aws-sdk/client-s3");
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const {ImageRequest} = require("../models/ImageRequest");
-const { uuid } = require('uuidv4');
 const short = require('short-uuid');
 require('dotenv').config();
 
@@ -44,15 +43,15 @@ const uploadImage = multer({
             cb(null, {fieldname: file.fieldname})
         },
         key: async (req, file, cb) => {
-            const uid = short.generate();
+            const uid = short.generate().toString();
+            const fileName = `${req.body.directory}/` + `${req.params.id}/` + uid + "-" + file.originalname;
             const request = await ImageRequest.create({
                 userId: req.params.id,
-                UID: short.generate(),
-                fileURL: `https://facestylizerbucket.s3.us-east-2.amazonaws.com/user-uploads/${req.params.id}/${uid}-${file.originalname}`,
+                UID: uid,
+                fileURL: `https://facestylizerbucket.s3.us-east-2.amazonaws.com/${filename}`,
                 uploadDate: new Date
             })
             await request.save()
-            const fileName = "user-uploads/" + `${req.params.id}/` + uid + "-" + file.originalname;
             cb(null, fileName);
         }
     }),
