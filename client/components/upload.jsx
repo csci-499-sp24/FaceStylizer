@@ -196,7 +196,7 @@ function FileUpload() {
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
-                    <option value="custom">Custom</option>
+                    {/* <option value="custom">Custom</option> */}
                 </select>
                 </div>
 
