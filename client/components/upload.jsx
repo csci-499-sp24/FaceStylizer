@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import ConfirmationModal from './ResponsePop';
 import CustomImageUpload from './custom';
 import ImageDropzone from './imagedrop';
+import NextCheckbox from './checkbox';
 
 
 function FileUpload() {
@@ -21,6 +22,9 @@ function FileUpload() {
     const [modalOpen, setModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isCustomSelected, setIsCustomSelected] = useState(false);
+    const [isDropzone, setIsDropzone] = useState(false);
+
+    
 
     const [custom, setCustom] = useState(null);
     const fileInputRef = useRef(null);
@@ -79,6 +83,10 @@ function FileUpload() {
       setSelectedModel("");
     };
   
+    const handleCustomChange = (newImage)=>{
+
+        setCustom(newImage);
+    }
 
     // const handleModelChange = (event) => {
     //   setSelectedModel(event.target.value);
@@ -97,6 +105,21 @@ function FileUpload() {
       }
     };
     
+    const handleCheckboxChange = () => {
+        setIsCustomSelected(prevState => !prevState);
+      setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }, 100);  
+        
+        
+            setSelectedStyle('custom');
+        
+    
+    };
+    
+    
+
+      
 
     const handleSwitchImage = () => {
       open();
@@ -132,8 +155,10 @@ function FileUpload() {
   };
     return (
       <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
-<div className="flex">
+
+      <NextCheckbox onChange={handleCheckboxChange} /><div className="flex">
     <div className="flex-1 w-100">
+
         <ImageDropzone
             getRootProps={getRootProps}
             getInputProps={getInputProps}
@@ -147,14 +172,14 @@ function FileUpload() {
             <CustomImageUpload
                 handleFileSelect={handleFileSelect}
                 handleImageRemove={handleImageRemoveCustom}
-                handleSwitchImage={handleSwitchImage}
+                handleSwitchImage={handleCustomChange}
                 Custom={custom}
             />
         </div>
     )}
 </div>
 
-    
+{!isCustomSelected && (
         <div className="w-full max-w-4xl mt-4">
         <div className="w-full flex justify-center items-center">
 
@@ -176,6 +201,7 @@ function FileUpload() {
                 </div>
 
            </div>
+)}
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
                 {/* <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
