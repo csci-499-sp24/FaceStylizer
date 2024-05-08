@@ -355,7 +355,7 @@ function FileUpload() {
 
                     onClick={async () => {
                         console.log('Submitting form data:', stylizedImage);
-                        const url = 'upload/' + sessionStorage.getItem('username');
+                        const url = 'upload/' + sessionStorage.getItem('uid');
                         console.log(url);
 
                         console.log(process.env.NODE_ENV);       
@@ -365,6 +365,7 @@ function FileUpload() {
                             const response = await fetch(stylizedImage);
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
+                            formData.append('style', selectedStyle); // Attach selected style to payload
                         }
 
                         try {

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const uploadImage = require("../utilities/uploadImage");
+const {ImageRequest} = require("../models/ImageRequest");
+const short = require('short-uuid');
 
 // File S3 Object Requests Format
 // req.file = {
@@ -21,18 +23,41 @@ const uploadImage = require("../utilities/uploadImage");
 // Upload and file processing logic located in utilities/uploadImage.js
 
 router.post("/upload/:id", uploadImage.single("image"), async (req, res, next) => {
-
     console.log(`User ${req.params.id} successfully uploaded image to S3 bucket, accessible with URL: ${req.file.location}`)
-    console.log(req.file);
+
+    const imageUID = req.file.location.split('/')[4].split('-')[0];
+
+    const request = await ImageRequest.create({
+        userId: req.params.id,
+        UID: imageUID,
+        fileURL: `${req.file.location}`,
+        uploadDate: new Date,
+        style: req.body.style
+    })
+    await request.save()
 
     res.status(200);
     res.json({
-        message: `User ${req.params.id} successfully uploaded image to S3 bucket, accessible with URL: ${req.file.location}`
-    })
+        message: `User ${req.params.id} successfully uploaded image to S3 bucket`,
+        url: `${req.file.location}`
+    });
+});
 
-    // MongoDB Changes to go here when implemented
-    }
-)
-
+router.get("/user/:id", async function(req, res) {
+    console.log(req.params.id);
+    const imageRequests = ImageRequest.find({
+        userId: req.params.id
+        }
+    )
+    await imageRequests.exec()
+        .then((query) => {
+            console.log(query);
+            res.json(query)
+        })
+        .catch((e) => {
+            console.log(`Could not find images for user ${req.params.id}`);
+            res.json({message: `Could not find images for user ${req.params.id}`})
+        })
+})
 
 module.exports = router;
