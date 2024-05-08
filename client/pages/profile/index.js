@@ -5,7 +5,7 @@ import RHeader from "@/components/header";
 import UpdateUsername from "@/components/changeusername";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
 import ChangePassword from "@/components/changepassword";
-
+import FilesApi from "@/Api/FilesApi";
 
 const ProfileCard = () => {
 
@@ -15,6 +15,8 @@ const ProfileCard = () => {
   const [showUpdateUsername, setShowUpdateUsername] = useState(false);
   const [imagesExpanded, setImagesExpanded] = useState(false);
   const imagesContainerRef = useRef(null); 
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const toggleImagesExpanded = () => {
     setImagesExpanded(!imagesExpanded);
@@ -48,7 +50,41 @@ const ProfileCard = () => {
   
     fetchUsername();
     }, []);
-const toggleUpdateUsernameModal = () => {
+
+    useEffect(() => {
+      const fetchImages = async () => {
+          const userId = sessionStorage.getItem('uid');
+          const response = await FilesApi.get(`/user/${userId}`);
+          setImages(response.data);
+          setLoading(false);
+      };
+  
+      fetchImages();
+    }, []);
+
+    const renderImages = () => {
+      if (loading) {
+        return <div>Loading...</div>;
+      }
+  
+      if (images.length === 0) {
+        // If no images found for the user, render default image
+        return (
+          <div className="w-64 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+            <span>No images found</span>
+          </div>
+        );
+      }
+  
+      return images.map((image) => (
+        <div key={image._id} className="w-70 h-32 m-2 rounded-md overflow-hidden">
+          <img src={image.fileURL} alt={`Image ${image._id}`} className="w-full h-full object-cover" />
+        </div>
+      ));
+    };
+
+
+  const toggleUpdateUsernameModal = () => {
         setModalOpen(!modalOpen);
       };
     
@@ -97,16 +133,8 @@ const toggleUpdateUsernameModal = () => {
           </button>
           {imagesExpanded && (
             <div className="mt-4">
-              <div className="flex flex-wrap justify-center">
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 1</span>
-                </div>
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 2</span>
-                </div>
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 3</span>
-                </div>
+              <div className="flex flex-wrap flex-col items-center justify-center">
+                {renderImages()}
               </div>
             </div>
           )}
@@ -115,10 +143,10 @@ const toggleUpdateUsernameModal = () => {
 
           <button
             onClick={handleNavigateHome}
-             className="mt-5 rounded-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none animate-bounce text-base flex items-center justify-center"
+             className="mt-5 rounded-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-400 text-white focus:shadow-outline focus:outline-none text-base flex items-center justify-center"
             style={{ maxWidth: "100px", overflow: "hidden", margin: "0 auto" }}
           >
-            FaceStylize
+            FaceStylizer
           </button>
         </div>
       </div>
