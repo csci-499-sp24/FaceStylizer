@@ -6,6 +6,7 @@ const imageRequestSchema = new Schema({
     userId: String,
     UID: String,
     fileURL: String,
+    style: String,
     uploadDate: Date
 });
 

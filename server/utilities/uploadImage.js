@@ -44,14 +44,7 @@ const uploadImage = multer({
         },
         key: async (req, file, cb) => {
             const uid = short.generate().toString();
-            const fileName = `${req.body.directory}/` + `${req.params.id}/` + uid + "-" + file.originalname;
-            const request = await ImageRequest.create({
-                userId: req.params.id,
-                UID: uid,
-                fileURL: `https://facestylizerbucket.s3.us-east-2.amazonaws.com/${filename}`,
-                uploadDate: new Date
-            })
-            await request.save()
+            const fileName = `${req.params.id}/` + uid + "-" + file.originalname;
             cb(null, fileName);
         }
     }),
