@@ -4,6 +4,7 @@ import FileUpload from "@/components/upload";
 import ArrowDown from "@/components/arrow";
 import React from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import App from "./app"
 
 function Index() {
   return (

@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED True
 COPY . ./
 
 # Expose PORT
-ENV PORT 8080
+ENV PORT 8090
 
 # Install Dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -24,5 +24,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN cd dlib && mkdir build && cd build && cmake ../ && cmake --build . && cd .. && python3 setup.py install
 
 # Start handler
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
+CMD exec gunicorn --bind $PORT --workers 1 --threads 8 --timeout 0 main:app
 
