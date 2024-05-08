@@ -50,20 +50,26 @@ def home():
 
 @app.route('/generateCustomStyle', methods=['POST'])
 def generateCustom():
-    print(request.form)
+    print(request.files)
     # check if the post request has the image part
-    if 'image' in request.files and 'style' in request.form:
+    if 'image' in request.files and 'custom' in request.files:
         # grab image from request
         file = request.files['image']
         filename = secure_filename(file.filename)
+        customFile = request.files['custom']
+        customFilename = secure_filename(customFile.filename)
         
         # save file to disk
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         input_img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
+        customFile.save(os.path.join(app.config['UPLOAD_FOLDER'], customFilename))
+        input_custom_path = os.path.join(app.config['UPLOAD_FOLDER'], customFilename)
+        
+        print(input_img_path, input_custom_path)
         # Stylize image
         try:
-            res = generateCustomStyle(file.filename, input_img_path, app.config["UPLOAD_FOLDER"])
+            res = generateCustomStyle(file.filename, input_img_path, customFile.filename, input_custom_path, app.config["UPLOAD_FOLDER"])
 
             # send result back to client
             return send_file(res["results"], mimetype='image/jpg')

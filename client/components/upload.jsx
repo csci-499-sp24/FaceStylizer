@@ -3,6 +3,7 @@ import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
 import { useDropzone } from "react-dropzone";
 import ConfirmationModal from './ResponsePop';
+import CustomImageUpload from './custom';
 
 
 function FileUpload() {
@@ -18,9 +19,22 @@ function FileUpload() {
     const scrollRef = useRef(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isCustomSelected, setIsCustomSelected] = useState(false);
+    const [custom, setCustom] = useState(null);
+    const fileInputRef = useRef(null);
 
     
     
+    const handleFileSelect = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setCustom(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
     
     const handleConfirm = () => {
       console.log("added!");
@@ -68,8 +82,19 @@ function FileUpload() {
     //   setSelectedModel(event.target.value);
     // };
     const handleStyleChange = (event) => {
-        setSelectedStyle(event.target.value); 
+      const selectedValue = event.target.value;
+      setSelectedStyle(selectedValue);
+      if (selectedValue === 'custom') {
+        setIsCustomSelected(true);
+        setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }, 100);
+    }
+     else {
+        setIsCustomSelected(false);
+      }
     };
+    
 
     const handleSwitchImage = () => {
       open();
@@ -93,14 +118,14 @@ function FileUpload() {
         // setDisplayedImages(updatedImages);
         setSelectedImage(null);
         setSelectedStyle(null);
+        setCustom(null);
     };
 
     return (
       <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
-      <div
+   <div
         {...getRootProps({ className: "dropzone" })}
-        className="w-full max-w-4xl"
-      >
+        className="w-full max-w-4xl mr-4"      >
         <input {...getInputProps()} />
         <div 
           className={` rounded-lg p-4 ${
@@ -150,6 +175,7 @@ function FileUpload() {
             </div>
           )}
         </div>
+        <div className="w-full max-w-4xl mt-4">
         <div className="w-full flex justify-center items-center">
 
         <select
@@ -157,13 +183,23 @@ function FileUpload() {
                     className="text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 w-full"
                     onChange={handleStyleChange}
                 >
+                  
                     <option>Select FaceStylizer</option>
                     <option value="disney">Disney</option>
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
-                    <option value="custom">Custom Style</option>
+                    <option value="custom">Custom</option>
                 </select>
+                </div>
+                {isCustomSelected && (
+      <CustomImageUpload
+        handleFileSelect={handleFileSelect}
+        handleImageRemove={handleImageRemove}
+        handleSwitchImage={handleSwitchImage}
+        Custom={custom}
+      />
+    )}
                 </div>
            </div>
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
@@ -206,18 +242,20 @@ function FileUpload() {
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                         console.log(selectedStyle)
                   
+
                         let formData = new FormData();
-                        if (selectedImage) {
+
+                        // Generate Pretrain Style
+                        if (!isCustomSelected) {
                             // Convert data URL to blob
                             const response = await fetch(selectedImage);
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Attach image to payload 
                             formData.append('style', selectedStyle); // Attach selected style to payload
-                        }
-
-                        try {
-                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            if (selectedStyle != "custom") {
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                                 const response = await StylizerApi.post("upload", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -225,9 +263,27 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
-                            // Generate Custom Style
-                            else {
+                        } 
+                        // Generate Custom Style
+                        else {
+                            // Convert data URL to blob
+                            const response = await fetch(selectedImage);
+                            const blob = await response.blob();
+
+                            const customResponse = await fetch(custom);
+                            const customBlob = await customResponse.blob();
+
+                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
+                            formData.append('custom', customBlob, "custom.jpg"); // Attach custom image to payload
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_IP}`)
                                 const response = await StylizerApi.post("generateCustomStyle", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -235,14 +291,13 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
+                        }
 
-                        } catch (error) {
-                            console.error('Error Message:', await error.response.data.text())
-                            setModalOpen(true);
-
-
-                                                  }
 
 
 
