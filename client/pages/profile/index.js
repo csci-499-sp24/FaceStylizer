@@ -5,7 +5,7 @@ import RHeader from "@/components/header";
 import UpdateUsername from "@/components/changeusername";
 import { Button, Modal, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from "reactstrap";
 import ChangePassword from "@/components/changepassword";
-
+import Gallery from "@/components/gallery";
 
 const ProfileCard = () => {
 
@@ -96,19 +96,22 @@ const toggleUpdateUsernameModal = () => {
             {imagesExpanded ? "Hide" : "Show"} Your Stylized Images
           </button>
           {imagesExpanded && (
-            <div className="mt-4">
-              <div className="flex flex-wrap justify-center">
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 1</span>
-                </div>
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 2</span>
-                </div>
-                <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
-                  <span>Image 3</span>
-                </div>
-              </div>
+            <div>
+              <Gallery/>
             </div>
+            // <div className="mt-4">
+            //   <div className="flex flex-wrap justify-center">
+            //     <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+            //       <span>Image 1</span>
+            //     </div>
+            //     <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+            //       <span>Image 2</span>
+            //     </div>
+            //     <div className="w-32 h-32 bg-gray-200 m-2 rounded-md flex items-center justify-center">
+            //       <span>Image 3</span>
+            //     </div>
+            //   </div>
+            // </div>
           )}
         </div>
 
