@@ -153,7 +153,7 @@ router.post('/login', async (req, res) => {
         .then((query) => {
             if (query[0]["password"] === req.body.password) {
                 console.log(`User ${req.body.username} successfully logged in`);
-                res.status(202).send({message: `Welcome back ${req.body.username}`});
+                res.status(202).send({message: `Welcome back ${req.body.username}`, uid: query[0]['id']});
             } else {
                 console.log(`Incorrect login attempt for user ${req.body.username}`);
                 res.status(412).send({message: `The password you have entered is incorrect`});
