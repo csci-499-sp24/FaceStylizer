@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 
-const scrollToBottom = () => {
-  window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'auto'
-  });
+function Hero() {
+    const router = useRouter();
+
+    const scrollToBottom = () => {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'auto'
+    });
+  };
+  
+  const handleNavigateInformation = () => {
+    router.push('/information'); 
 };
 
-const Hero = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div
@@ -26,14 +33,16 @@ const Hero = () => {
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
           aria-hidden="true"
         ></div>
-      
-      <div className="relative rounded-full px-3 py-1 text-sm mb-5 leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+      <button 
+        className="relative rounded-full px-3 py-1 text-sm mb-5 leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+        onClick={handleNavigateInformation}
+        >
           Interested in how JoJoGAN architecture works?{' '}
-          <a href="#" className="font-semibold text-gray-600">
+          <a className="font-semibold text-gray-600">
             <span className="absolute inset-0" aria-hidden="true" />
             Read more <span aria-hidden="true">&rarr;</span>
           </a>
-        </div>
+        </button>
 
 
       <div className="text-center mb-5">
