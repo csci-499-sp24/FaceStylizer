@@ -34,6 +34,7 @@ const CustomImageUpload = ({ handleFileSelect, handleImageRemove, handleSwitchIm
         ) : (
           <div className="relative">
             <img
+            
               src={Custom}
               alt="Preview"
               className="rounded mx-auto max-w-full max-h-96"
@@ -55,12 +56,12 @@ const CustomImageUpload = ({ handleFileSelect, handleImageRemove, handleSwitchIm
         )}
       </div>
       <div className="w-full flex justify-center items-center">
-        <button
+        {/* <button
           onClick={() => fileInputRef.current.click()}
           className="justify-center items-center text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 w-full"
         >
           Custom
-        </button>
+        </button> */}
       </div>
     </div>
   );
