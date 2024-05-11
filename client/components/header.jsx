@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Login from "./login";
 import SignUp from './signup';
 import Profile from './profile';
+import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tailwindcss/tailwind.css';
 
 function RHeader() {
   const [open, setOpen] = useState(true);
   const [username, setUsername] = useState("");
-
+  
   useEffect(() => {
     const fetchUsername = () => {
       try {
@@ -23,6 +24,13 @@ function RHeader() {
     fetchUsername();
   }, []);
 
+  const router = useRouter();
+  router.asPath === '/'
+
+  const handleHomeClick = () => {
+    router.push('/');
+  };
+
   // if user is logged in and username exists in session storage
   if(username) {
     return (
@@ -30,7 +38,7 @@ function RHeader() {
         <div className="w-full text-gray-700 dark-mode:text-gray-200">
           <div className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
             <div className="flex flex-row items-center justify-between p-4">
-              <a href="#" className="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">FACESTYLIZER</a>
+              <a href="#" onClick={handleHomeClick} className="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">FACESTYLIZER</a>
             </div>
             <nav className={`flex-col flex-grow ${open ? '' : 'hidden'} pb-4 md:pb-0 md:flex md:justify-end md:flex-row`}>
               <div className="flex items-center">
@@ -48,7 +56,7 @@ function RHeader() {
         <div className="w-full text-gray-700 dark-mode:text-gray-200">
           <div className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
             <div className="flex flex-row items-center justify-between p-4">
-              <a href="#" className="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">FACESTYLIZER</a>
+              <a href="#" onClick={handleHomeClick} className="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">FACESTYLIZER</a>
             </div>
             <nav className={`flex-col flex-grow ${open ? '' : 'hidden'} pb-4 md:pb-0 md:flex md:justify-end md:flex-row`}>
                 <div className="flex items-center">

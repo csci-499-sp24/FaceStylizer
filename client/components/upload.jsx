@@ -3,6 +3,9 @@ import FilesApi from "@/Api/FilesApi";
 import StylizerApi from '@/Api/StylizerApi';
 import { useDropzone } from "react-dropzone";
 import ConfirmationModal from './ResponsePop';
+import CustomImageUpload from './custom';
+import ImageDropzone from './imagedrop';
+import NextCheckbox from './checkbox';
 
 
 function FileUpload() {
@@ -18,9 +21,26 @@ function FileUpload() {
     const scrollRef = useRef(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isCustomSelected, setIsCustomSelected] = useState(false);
+    const [isDropzone, setIsDropzone] = useState(false);
+
+    
+
+    const [custom, setCustom] = useState(null);
+    const fileInputRef = useRef(null);
 
     
     
+    const handleFileSelect = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setCustom(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
     
     const handleConfirm = () => {
       console.log("added!");
@@ -63,13 +83,43 @@ function FileUpload() {
       setSelectedModel("");
     };
   
+    const handleCustomChange = (newImage)=>{
+
+        setCustom(newImage);
+    }
 
     // const handleModelChange = (event) => {
     //   setSelectedModel(event.target.value);
     // };
     const handleStyleChange = (event) => {
-        setSelectedStyle(event.target.value); 
+      const selectedValue = event.target.value;
+      setSelectedStyle(selectedValue);
+      if (selectedValue === 'custom') {
+        setIsCustomSelected(true);
+        setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }, 100);
+    }
+     else {
+        setIsCustomSelected(false);
+      }
     };
+    
+    const handleCheckboxChange = () => {
+        setIsCustomSelected(prevState => !prevState);
+      setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }, 100);  
+        
+        
+            setSelectedStyle('custom');
+        
+    
+    };
+    
+    
+
+      
 
     const handleSwitchImage = () => {
       open();
@@ -93,79 +143,65 @@ function FileUpload() {
         // setDisplayedImages(updatedImages);
         setSelectedImage(null);
         setSelectedStyle(null);
+        setCustom(null);
     };
-
+    const handleImageRemoveCustom = (index) => {
+      // const updatedImages = [...displayedImages];
+      // updatedImages.splice(index, 1);
+      // setDisplayedImages(updatedImages);
+      // setSelectedImage(null);
+      // setSelectedStyle(null);
+      setCustom(null);
+  };
     return (
       <div className="flex flex-col items-center justify-center p-6 min-h-screen pt-40">
-      <div
-        {...getRootProps({ className: "dropzone" })}
-        className="w-full max-w-4xl"
-      >
-        <input {...getInputProps()} />
-        <div 
-          className={` rounded-lg p-4 ${
-            selectedImage ? "" : "border-gray-300"
-          }`}
-        >
-          {!selectedImage ? (
-                 <div className="text-gray-500 text-center">
-                 <img
-                   src="https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png" 
-                   alt="Placeholder"
-                   className="mx-auto max-w-full max-h-96 rounded"
-                 />
-                                  <p>Drag and drop some files here, or click to select files</p>
 
-               </div>
-          ) : (
-            <div className="relative">
-              <img
-                src={selectedImage}
-                alt="Preview"
-                className="rounded mx-auto max-w-full max-h-96"
-              />
+      <NextCheckbox onChange={handleCheckboxChange} /><div className="flex">
+    <div className="flex-1 w-100">
 
-
-              <button
-                onClick={handleSwitchImage}
-                className="absolute top-0 right-0 m-2 bg-white rounded-full p-1 shadow-lg"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
-      </svg>
-
-              </button>
-
-              
-              <button
-        onClick={handleClearImage}
-      className="absolute top-0 right-10 m-2 bg-white rounded-full p-1 shadow-lg"
->
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-     <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-      </svg>
-
-        </button>
-
-            </div>
-          )}
+        <ImageDropzone
+            getRootProps={getRootProps}
+            getInputProps={getInputProps}
+            selectedImage={selectedImage}
+            handleSwitchImage={handleSwitchImage}
+            handleClearImage={handleClearImage}
+        />
+    </div>
+    {isCustomSelected && (
+        <div className="flex-1 w-64">
+            <CustomImageUpload
+                handleFileSelect={handleFileSelect}
+                handleImageRemove={handleImageRemoveCustom}
+                handleSwitchImage={handleCustomChange}
+                Custom={custom}
+            />
         </div>
+    )}
+</div>
+
+{!isCustomSelected && (
+        <div className="w-full max-w-4xl mt-4">
         <div className="w-full flex justify-center items-center">
+
+          
 
         <select
                     id="restaurantImage"
                     className="text-center cursor-pointer hover:opacity-80 inline-flex items-center shadow-md my-2 px-4 py-2 bg-gray-900 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 w-full"
                     onChange={handleStyleChange}
                 >
+                  
                     <option>Select FaceStylizer</option>
                     <option value="disney">Disney</option>
                     <option value="jojo">JoJo</option>
                     <option value="jojo_yasuho">JoJo Yasuho</option>
                     <option value="arcane_jinx">Arcane Jinx</option>
-                    <option value="custom">Custom Style</option>
+                    {/* <option value="custom">Custom</option> */}
                 </select>
                 </div>
+
            </div>
+)}
             <div className="w-full md:w-3/4 mt-4 flex justify-center items-center">
                 {/* <button
                     className="inline-flex items-center shadow-md px-4 py-2 bg-red-500 text-gray-50 border border-transparent rounded-md font-semibold text-sm uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150"
@@ -206,18 +242,20 @@ function FileUpload() {
                         console.log(`${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                         console.log(selectedStyle)
                   
+
                         let formData = new FormData();
-                        if (selectedImage) {
+
+                        // Generate Pretrain Style
+                        if (!isCustomSelected) {
                             // Convert data URL to blob
                             const response = await fetch(selectedImage);
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Attach image to payload 
                             formData.append('style', selectedStyle); // Attach selected style to payload
-                        }
-
-                        try {
-                            console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
-                            if (selectedStyle != "custom") {
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_STYLIZER_URL}`)
                                 const response = await StylizerApi.post("upload", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -225,9 +263,27 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
-                            // Generate Custom Style
-                            else {
+                        } 
+                        // Generate Custom Style
+                        else {
+                            // Convert data URL to blob
+                            const response = await fetch(selectedImage);
+                            const blob = await response.blob();
+
+                            const customResponse = await fetch(custom);
+                            const customBlob = await customResponse.blob();
+
+                            formData.append('image', blob, 'image.jpg'); // Attach image to payload 
+                            formData.append('custom', customBlob, "custom.jpg"); // Attach custom image to payload
+                            
+                            // Send formData w/ request
+                            try {
+                                console.log(`Sending request to ${process.env.NEXT_PUBLIC_IP}`)
                                 const response = await StylizerApi.post("generateCustomStyle", formData, {
                                     headers: {
                                         'Content-Type': 'multipart/form-data'
@@ -235,14 +291,13 @@ function FileUpload() {
                                 });
                                 console.log('Success response', response.data);
                                 setStylizedImage(URL.createObjectURL(response.data));
+
+                            } catch (error) {
+                                console.error('Error Message:', await error.response.data.text())
+                                setModalOpen(true);
                             }
+                        }
 
-                        } catch (error) {
-                            console.error('Error Message:', await error.response.data.text())
-                            setModalOpen(true);
-
-
-                                                  }
 
 
 
