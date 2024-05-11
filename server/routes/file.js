@@ -60,4 +60,18 @@ router.get("/user/:id", async function(req, res) {
         })
 })
 
+router.get("/mostrecent", async function(req, res) {
+    const imageRequests = ImageRequest.find(
+    )
+    await imageRequests.exec()
+        .then((query) => {
+            console.log(query);
+            res.json(query);
+        })
+        .catch((e) => {
+            console.log(`Could not find any image requests`);
+            res.json({message: "Could not find any image requests"})
+        })
+})
+
 module.exports = router;
