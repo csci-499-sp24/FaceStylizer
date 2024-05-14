@@ -74,4 +74,20 @@ router.get("/mostrecent", async function(req, res) {
         })
 })
 
+router.delete("/delete/:id", async function (req, res) {
+    const imageToDelete = ImageRequest.findOneAndDelete({
+            fileURL: req.body.url
+        }
+    )
+    await imageToDelete.exec()
+        .then(query => {
+            console.log(`Deleted imagerequest from database: ${query}`)
+            res.json({message: `Deleted imagerequest from database: ${query}`})
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        });
+})
+
 module.exports = router;
