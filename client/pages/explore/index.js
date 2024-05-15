@@ -40,22 +40,22 @@ const Explore = () => {
 
   const filteredImages = selectedStyle === 'All' ? images : images.filter(image => image.style === selectedStyle);
 
-  useEffect(() => {
-    fetchUserData();
-  }, [filteredImages]);
+//   useEffect(() => {
+//     fetchUserData();
+//   }, [filteredImages]);
 
-  const fetchUserData = async () => {
-    try {
-        const updatedImages = await Promise.all(filteredImages.map(async (image) => {
-            const response = await UsersApi.get(`/readUser/${image.userId}`);
-            const user = response.data.message;
-            return { ...image, username: user.username };
-          }));
-          setNewImages(updatedImages);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
+//   const fetchUserData = async () => {
+//     try {
+//         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
+//             const response = await UsersApi.get(`/readUser/${image.userId}`);
+//             const user = response.data.message;
+//             return { ...image, username: user.username };
+//           }));
+//           setNewImages(updatedImages);
+//     } catch (error) {
+//       console.error('Error fetching user data:', error);
+//     }
+//   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -82,7 +82,7 @@ const Explore = () => {
             </select>
           </div>
 
-        {newImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
+        {filteredImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
               {image && image.username && (
