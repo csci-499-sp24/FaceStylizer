@@ -24,7 +24,6 @@ const Explore = () => {
 
   const handleStyleChange = (event) => {
     setSelectedStyle(event.target.value);
-    // Reset currentIndex when changing style to ensure consistency
     setCurrentIndex(0);
   };
 
@@ -89,12 +88,12 @@ const Explore = () => {
         {newImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
-              {image && image.username && (
+              {/* {image && image.username && (
                 <p><span className="font-bold">Uploaded by:</span> {image.username}</p>
               )}
                 {image && !image.username && (
                 <p><span className="font-bold">Uploaded by:</span> John Doe #{image.userId}</p>
-              )}
+              )} */}
               <p><span className="font-bold">Upload Date:</span> {formatDate(image.uploadDate)}</p>
               <p><span className="font-bold">Style:</span> {image.style}</p>
             </div>
