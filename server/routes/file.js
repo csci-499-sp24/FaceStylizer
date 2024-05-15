@@ -74,9 +74,9 @@ router.get("/mostrecent", async function(req, res) {
         })
 })
 
-router.delete("/delete/:id", async function (req, res) {
+router.delete("/delete", async function (req, res) {
     const imageToDelete = ImageRequest.findOneAndDelete({
-            fileURL: req.body.url
+            fileURL: req.body.fileURL
         }
     )
     await imageToDelete.exec()
