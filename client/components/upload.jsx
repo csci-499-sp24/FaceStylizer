@@ -371,7 +371,7 @@ function FileUpload() {
                                 formData.append('style', selectedStyle);
                             }
                             else {
-                                formData.append('custom', selectedStyle);
+                                formData.append('style', 'custom');
                             }
                         }
 
