@@ -280,7 +280,6 @@ function FileUpload() {
 
                             formData.append('image', blob, 'image.jpg'); // Attach image to payload 
                             formData.append('custom', customBlob, "custom.jpg"); // Attach custom image to payload
-                            formData.append('style', 'custom'); // Attach style to payload
                             
                             // Send formData w/ request
                             try {
@@ -367,12 +366,7 @@ function FileUpload() {
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
                             // Attach selected style to payload
-                            if (selectedStyle != null) {
-                                formData.append('style', selectedStyle);
-                            }
-                            else {
-                                formData.append('style', 'custom');
-                            }
+                            formData.append('style', selectedStyle);
                         }
 
                         try {
