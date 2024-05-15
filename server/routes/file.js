@@ -32,7 +32,7 @@ router.post("/upload/:id", uploadImage.single("image"), async (req, res, next) =
         UID: imageUID,
         fileURL: `${req.file.location}`,
         uploadDate: new Date,
-        style: req.body.style
+        style: req.body.style === undefined ? 'custom' : req.body.style
     })
     await request.save()
 
