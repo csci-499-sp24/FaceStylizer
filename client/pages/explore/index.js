@@ -39,11 +39,6 @@ const Explore = () => {
 
   const filteredImages = selectedStyle === 'All' ? images : images.filter(image => image.style === selectedStyle);
 
-  useEffect(() => {
-    fetchUserData();
-  }, [filteredImages]);
-
-
   const fetchUserData = async () => {
     try {
         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
@@ -56,8 +51,6 @@ const Explore = () => {
       console.error('Error fetching user data:', error);
     }
   };
-
-  console.log(newImages);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -85,15 +78,17 @@ const Explore = () => {
             </select>
           </div>
 
-        {newImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
+        {filteredImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
               {/* {image && image.username && (
+              {image && image.username && (
                 <p><span className="font-bold">Uploaded by:</span> {image.username}</p>
               )}
                 {image && !image.username && (
                 <p><span className="font-bold">Uploaded by:</span> John Doe #{image.userId}</p>
               )} */}
+
               <p><span className="font-bold">Upload Date:</span> {formatDate(image.uploadDate)}</p>
               <p><span className="font-bold">Style:</span> {image.style}</p>
             </div>
