@@ -42,7 +42,7 @@ function Login() {
   return (
     <>
       <button
-        className="mt-2 text-sm bg-white active:bg-blueGray-50 text-blueGray-700 px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center font-bold ease-linear transition-all duration-150"
+        className="mt-2 text-sm bg-slate-200 hover:bg-white active:bg-blueGray-50 text-blueGray-700 px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 shadow-sm hover:shadow-sm inline-flex items-center font-bold ease-linear transition-all duration-150"
         type="button"
         onClick={() => setModalOpen(!modalOpen)}
       >
