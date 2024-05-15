@@ -12,7 +12,7 @@ const Explore = () => {
   const [newImages, setNewImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedStyle, setSelectedStyle] = useState('All');
-  const [users, setUsers] = useState({}); 
+  const [user, setUser] = useState(0); 
 
   const handleNextClick = () => {
     setCurrentIndex(prevIndex => Math.min(prevIndex + 5, images.length - 1));
@@ -40,24 +40,25 @@ const Explore = () => {
 
   const filteredImages = selectedStyle === 'All' ? images : images.filter(image => image.style === selectedStyle);
 
-//   useEffect(() => {
-//     fetchUserData();
-//   }, [filteredImages]);
+  useEffect(() => {
+    fetchUserData();
+  }, [filteredImages]);
 
 
-//   const fetchUserData = async () => {
-//     try {
-//         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
-//             const response = await UsersApi.get(`/readUser/${image.userId}`);
-//             const user = response.data.message;
-//             return { ...image, username: user.username };
-//           }));
-//           setNewImages(updatedImages);
-//     } catch (error) {
-//       console.error('Error fetching user data:', error);
-//     }
-//   };
+  const fetchUserData = async () => {
+    try {
+        const updatedImages = await Promise.all(filteredImages.map(async (image) => {
+            const response = await UsersApi.get(`/readUser/${image.userId}`);
+            setUser(response.data);
+            return { ...image, username: user.username };
+          }));
+          setNewImages(updatedImages);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
+  console.log(newImages);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -85,7 +86,7 @@ const Explore = () => {
             </select>
           </div>
 
-        {filteredImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
+        {newImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
               {image && image.username && (
