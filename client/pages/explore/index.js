@@ -12,7 +12,7 @@ const Explore = () => {
   const [newImages, setNewImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedStyle, setSelectedStyle] = useState('All');
-  const [users, setUsers] = useState({}); 
+  const [user, setUser] = useState(0); 
 
   const handleNextClick = () => {
     setCurrentIndex(prevIndex => Math.min(prevIndex + 5, images.length - 1));
@@ -24,7 +24,6 @@ const Explore = () => {
 
   const handleStyleChange = (event) => {
     setSelectedStyle(event.target.value);
-    // Reset currentIndex when changing style to ensure consistency
     setCurrentIndex(0);
   };
 
@@ -40,24 +39,18 @@ const Explore = () => {
 
   const filteredImages = selectedStyle === 'All' ? images : images.filter(image => image.style === selectedStyle);
 
-//   useEffect(() => {
-//     fetchUserData();
-//   }, [filteredImages]);
-
-
-//   const fetchUserData = async () => {
-//     try {
-//         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
-//             const response = await UsersApi.get(`/readUser/${image.userId}`);
-//             const user = response.data.message;
-//             return { ...image, username: user.username };
-//           }));
-//           setNewImages(updatedImages);
-//     } catch (error) {
-//       console.error('Error fetching user data:', error);
-//     }
-//   };
-
+  const fetchUserData = async () => {
+    try {
+        const updatedImages = await Promise.all(filteredImages.map(async (image) => {
+            const response = await UsersApi.get(`/readUser/${image.userId}`);
+            setUser(response.data);
+            return { ...image, username: user.username };
+          }));
+          setNewImages(updatedImages);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -81,18 +74,21 @@ const Explore = () => {
               <option value="jojo">JoJo</option>
               <option value="jojo_yasuho">JoJo Yasuho</option>
               <option value="arcane_jinx">Arcane Jinx</option>
+              <option value="custom">Custom</option>
             </select>
           </div>
 
         {filteredImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
+              {/* {image && image.username && (
               {image && image.username && (
                 <p><span className="font-bold">Uploaded by:</span> {image.username}</p>
               )}
                 {image && !image.username && (
                 <p><span className="font-bold">Uploaded by:</span> John Doe #{image.userId}</p>
-              )}
+              )} */}
+
               <p><span className="font-bold">Upload Date:</span> {formatDate(image.uploadDate)}</p>
               <p><span className="font-bold">Style:</span> {image.style}</p>
             </div>
