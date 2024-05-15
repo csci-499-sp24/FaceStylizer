@@ -280,6 +280,7 @@ function FileUpload() {
 
                             formData.append('image', blob, 'image.jpg'); // Attach image to payload 
                             formData.append('custom', customBlob, "custom.jpg"); // Attach custom image to payload
+                            formData.append('style', 'custom'); // Attach style to payload
                             
                             // Send formData w/ request
                             try {
