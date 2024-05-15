@@ -40,22 +40,24 @@ const Explore = () => {
 
   const filteredImages = selectedStyle === 'All' ? images : images.filter(image => image.style === selectedStyle);
 
-  useEffect(() => {
-    fetchUserData();
-  }, [filteredImages]);
+//   useEffect(() => {
+//     fetchUserData();
+//   }, [filteredImages]);
 
-  const fetchUserData = async (userId) => {
-    try {
-        const updatedImages = await Promise.all(filteredImages.map(async (image) => {
-            const response = await UsersApi.get(`/readUser/${image.userId}`);
-            const user = response.data.message;
-            return { ...image, username: user.username };
-          }));
-          setNewImages(updatedImages);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
+
+//   const fetchUserData = async () => {
+//     try {
+//         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
+//             const response = await UsersApi.get(`/readUser/${image.userId}`);
+//             const user = response.data.message;
+//             return { ...image, username: user.username };
+//           }));
+//           setNewImages(updatedImages);
+//     } catch (error) {
+//       console.error('Error fetching user data:', error);
+//     }
+//   };
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -69,7 +71,7 @@ const Explore = () => {
     <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-orange-500 p-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-white">Explore Facestylizer</h1>
-        <text className="text-2xl mb-8 text-white">See what other users are uploading!</text>
+        <div className="text-2xl mb-8 text-white">See what other users are uploading!</div>
           <div className="mt-4">
             <label htmlFor="style" className="text-2xl font-bold block text-white">Select Style:</label>
             <select id="style" value={selectedStyle} onChange={handleStyleChange} 
@@ -82,10 +84,15 @@ const Explore = () => {
             </select>
           </div>
 
-        {newImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
+        {filteredImages.slice().reverse().slice(currentIndex, currentIndex + 5).map(image => (
             <div key={image._id} className="bg-white p-4 mb-4 rounded">
               <img src={image.fileURL} alt="Uploaded face" className="w-full rounded" />
-              <p><span className="font-bold">Uploaded by:</span> {image.username}</p>
+              {image && image.username && (
+                <p><span className="font-bold">Uploaded by:</span> {image.username}</p>
+              )}
+                {image && !image.username && (
+                <p><span className="font-bold">Uploaded by:</span> John Doe #{image.userId}</p>
+              )}
               <p><span className="font-bold">Upload Date:</span> {formatDate(image.uploadDate)}</p>
               <p><span className="font-bold">Style:</span> {image.style}</p>
             </div>

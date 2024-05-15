@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 function Index() {
   const [username, setUsername] = useState("");
 
-  var loadingTime = 4000;
+  var loadingTime = 1000;
 
   setInterval(function () {
     loadingTime -= 1000;
-  }, 1000);
+  },  1000);
 
   useEffect(() => {
     const fetchUsername = () => {
@@ -28,7 +28,7 @@ function Index() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push('../');
-    }, 4000);
+    }, 1000);
     return () => clearTimeout(timer);
   }, );
 
