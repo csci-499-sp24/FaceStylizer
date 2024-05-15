@@ -44,6 +44,7 @@ const Explore = () => {
     fetchUserData();
   }, [filteredImages]);
 
+
   const fetchUserData = async () => {
     try {
         const updatedImages = await Promise.all(filteredImages.map(async (image) => {
