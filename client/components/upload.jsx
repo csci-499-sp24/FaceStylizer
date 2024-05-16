@@ -365,7 +365,8 @@ function FileUpload() {
                             const response = await fetch(stylizedImage);
                             const blob = await response.blob();
                             formData.append('image', blob, 'image.jpg'); // Assuming image is a JPEG
-                            formData.append('style', selectedStyle); // Attach selected style to payload
+                            // Attach selected style to payload
+                            formData.append('style', selectedStyle);
                         }
 
                         try {

@@ -32,7 +32,7 @@ router.post("/upload/:id", uploadImage.single("image"), async (req, res, next) =
         UID: imageUID,
         fileURL: `${req.file.location}`,
         uploadDate: new Date,
-        style: req.body.style
+        style: req.body.style === undefined ? 'custom' : req.body.style
     })
     await request.save()
 
@@ -58,6 +58,36 @@ router.get("/user/:id", async function(req, res) {
             console.log(`Could not find images for user ${req.params.id}`);
             res.json({message: `Could not find images for user ${req.params.id}`})
         })
+})
+
+router.get("/mostrecent", async function(req, res) {
+    const imageRequests = ImageRequest.find(
+    )
+    await imageRequests.exec()
+        .then((query) => {
+            console.log(query);
+            res.json(query);
+        })
+        .catch((e) => {
+            console.log(`Could not find any image requests`);
+            res.json({message: "Could not find any image requests"})
+        })
+})
+
+router.delete("/delete", async function (req, res) {
+    const imageToDelete = ImageRequest.findOneAndDelete({
+            fileURL: req.body.fileURL
+        }
+    )
+    await imageToDelete.exec()
+        .then(query => {
+            console.log(`Deleted imagerequest from database: ${query}`)
+            res.json({message: `Deleted imagerequest from database: ${query}`})
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        });
 })
 
 module.exports = router;
