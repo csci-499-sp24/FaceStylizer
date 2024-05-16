@@ -1,6 +1,8 @@
 # FaceStylizer
 Building a web application around JoJoGAN face stylization
 
+https://github.com/csci-499-sp24/FaceStylizer/assets/66185881/ba54c2f8-ef54-412b-a612-333f33fb83a9
+
 # Setup 
 ## 1) Clone the repo ```git clone```
 ## 2) Setup Server and Client
